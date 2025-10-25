@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Platform } from 'react-native';
+import { View, Text, StyleSheet, Platform, Alert } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { LinearGradient } from 'expo-linear-gradient';
 import MaskedView from '@react-native-masked-view/masked-view';
 import { useRouter, useFocusEffect } from 'expo-router';
+import { Audio } from 'expo-av';
+import Voice from '@react-native-voice/voice';
 import VoiceHeader from '../../src/components/VoiceHeader';
 import VoiceControls from '../../src/components/VoiceControls';
+import VoiceAnimation from '../../src/components/VoiceAnimation';
 import DecorationSvg from '../../src/components/DecorationSvg';
 
 export default function VoiceAIScreen() {
@@ -13,6 +16,95 @@ export default function VoiceAIScreen() {
   const [isRecording, setIsRecording] = useState(false);
   const [selectedModel, setSelectedModel] = useState('Axel 2.5 Pro');
   const [shouldAnimate, setShouldAnimate] = useState(false);
+  const [recording, setRecording] = useState<Audio.Recording | null>(null);
+  const [recordingUri, setRecordingUri] = useState<string | null>(null);
+  const [hasPermission, setHasPermission] = useState<boolean | null>(null);
+  const [transcribedText, setTranscribedText] = useState<string>('');
+  const [isListening, setIsListening] = useState<boolean>(false);
+  const [speechError, setSpeechError] = useState<string>('');
+
+  // Request audio recording permission
+  useEffect(() => {
+    async function getPermission() {
+      const { status } = await Audio.requestPermissionsAsync();
+      setHasPermission(status === 'granted');
+    }
+    getPermission();
+  }, []);
+
+  // Initialize Voice recognition
+  useEffect(() => {
+    Voice.onSpeechStart = () => {
+      console.log('Speech recognition started');
+      setIsListening(true);
+    };
+
+    Voice.onSpeechEnd = () => {
+      console.log('Speech recognition ended');
+      setIsListening(false);
+    };
+
+    Voice.onSpeechResults = (e) => {
+      console.log('Speech results:', e.value);
+      if (e.value && e.value.length > 0) {
+        setTranscribedText(e.value[0]);
+      }
+    };
+
+    Voice.onSpeechError = (e) => {
+      console.log('Speech recognition error:', e.error);
+      setSpeechError(e.error?.message || 'Speech recognition error');
+      setIsListening(false);
+    };
+
+    return () => {
+      Voice.destroy().then(Voice.removeAllListeners);
+    };
+  }, []);
+
+  // Cleanup recording on unmount
+  useEffect(() => {
+    return () => {
+      if (recording) {
+        try {
+          recording.stopAndUnloadAsync();
+        } catch (error) {
+          console.log(
+            'Recording already unloaded or error during cleanup:',
+            error
+          );
+        }
+      }
+    };
+  }, [recording]);
+
+  // Debug logging
+  useEffect(() => {
+    console.log('=== Voice Debug Info ===');
+    console.log('Recording:', isRecording ? 'Yes' : 'No');
+    console.log('Listening:', isListening ? 'Yes' : 'No');
+    console.log(
+      'Permission:',
+      hasPermission ? 'Granted' : hasPermission === false ? 'Denied' : 'Unknown'
+    );
+    if (recordingUri) {
+      console.log('Last Recording URI:', recordingUri);
+    }
+    if (transcribedText) {
+      console.log('Transcribed Text:', transcribedText);
+    }
+    if (speechError) {
+      console.log('Speech Error:', speechError);
+    }
+    console.log('========================');
+  }, [
+    isRecording,
+    isListening,
+    hasPermission,
+    recordingUri,
+    transcribedText,
+    speechError,
+  ]);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -40,9 +132,73 @@ export default function VoiceAIScreen() {
     console.log('More options pressed');
   };
 
-  const handleVoiceRecord = () => {
-    setIsRecording(!isRecording);
-    console.log('Voice recording toggled:', !isRecording);
+  const handleVoiceRecord = async () => {
+    if (!hasPermission) {
+      Alert.alert(
+        'Permission Required',
+        'Please grant microphone permission to record audio.'
+      );
+      return;
+    }
+
+    if (isRecording) {
+      // Stop recording and speech recognition
+      try {
+        if (recording) {
+          try {
+            await recording.stopAndUnloadAsync();
+            const uri = recording.getURI();
+            setRecordingUri(uri);
+          } catch (recordingError) {
+            console.log('Recording already stopped or error:', recordingError);
+          }
+          setRecording(null);
+        }
+
+        // Stop speech recognition
+        try {
+          await Voice.stop();
+        } catch (voiceError) {
+          console.log('Voice already stopped or error:', voiceError);
+        }
+
+        setIsRecording(false);
+        setIsListening(false);
+        console.log('Recording and speech recognition stopped');
+      } catch (error) {
+        console.error('Failed to stop recording:', error);
+        // Don't show alert for cleanup errors, just log them
+        setIsRecording(false);
+        setIsListening(false);
+      }
+    } else {
+      // Start recording and speech recognition
+      try {
+        // Clear previous transcription
+        setTranscribedText('');
+        setSpeechError('');
+
+        // Start speech recognition
+        await Voice.start('en-US');
+
+        // Start audio recording
+        await Audio.setAudioModeAsync({
+          allowsRecordingIOS: true,
+          playsInSilentModeIOS: true,
+        });
+
+        const { recording: newRecording } = await Audio.Recording.createAsync(
+          Audio.RecordingOptionsPresets.HIGH_QUALITY
+        );
+
+        setRecording(newRecording);
+        setIsRecording(true);
+        console.log('Recording and speech recognition started');
+      } catch (error) {
+        console.error('Failed to start recording:', error);
+        Alert.alert('Error', 'Failed to start recording');
+      }
+    }
   };
 
   const handleScan = () => {
@@ -76,33 +232,15 @@ export default function VoiceAIScreen() {
 
       {/* Text Content */}
       <View style={styles.textContainer}>
-        {/* <MaskedView
-          maskElement={
-            <Text style={styles.maskedText}>
-              Hi Axel, can{' '}
-              <Text style={styles.highlightedText}>
-                you remind me to water the plants every Wednesday at 9 AM
-              </Text>{' '}
-              in the morning?
-            </Text>
-          }
-        >
-          <LinearGradient
-            colors={['rgba(255, 255, 255, 0.25)', 'rgba(255, 255, 255, 0)']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 0, y: 1 }}
-            locations={[0.6, 1]}
-            style={styles.gradientMask}
-          >
-            <Text style={[styles.maskedText, { opacity: 0 }]}>
-              Hi Axel, can{' '}
-              <Text style={styles.highlightedText}>
-                you remind me to water the plants every Wednesday at 9 AM
-              </Text>{' '}
-              in the morning?
-            </Text>
-          </LinearGradient>
-        </MaskedView> */}
+        {/* Voice Animation - Show when recording */}
+        <VoiceAnimation isVisible={false} />
+
+        <Text style={[styles.text, styles.highlightedText]}>
+          {transcribedText}
+          {!isRecording &&
+            !transcribedText &&
+            'Tap the microphone to start recording...'}
+        </Text>
       </View>
 
       {/* Voice Controls */}
@@ -141,11 +279,12 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
     alignItems: 'center',
     paddingHorizontal: 32,
+    paddingVertical: 32,
   },
-  maskedText: {
+  text: {
     fontSize: 24,
     fontWeight: '500',
     textAlign: 'center',

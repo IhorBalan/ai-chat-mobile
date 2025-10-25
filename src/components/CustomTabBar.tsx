@@ -58,19 +58,27 @@ export default function CustomTabBar({
             });
           };
 
-          // Get icon name based on route
-          const getIcon = () => {
+          // Get Ionicons name based on route
+          const getIoniconsName = () => {
             switch (route.name) {
               case 'index':
                 return isFocused ? 'home' : 'home-outline';
               case 'chat':
                 return isFocused ? 'chatbubble' : 'chatbubble-outline';
-              case 'voice':
-                return 'mic';
               case 'profile':
                 return isFocused ? 'person' : 'person-outline';
               default:
                 return 'help-outline';
+            }
+          };
+
+          // Get MaterialCommunityIcons name based on route
+          const getMaterialCommunityIconsName = () => {
+            switch (route.name) {
+              case 'voice':
+                return 'microphone';
+              default:
+                return 'help';
             }
           };
 
@@ -90,7 +98,8 @@ export default function CustomTabBar({
             }
           };
 
-          const iconName = getIcon();
+          const ioniconsName = getIoniconsName();
+          const materialCommunityIconsName = getMaterialCommunityIconsName();
           const label = getLabel();
           const isVoiceTab = route.name === 'voice';
 
@@ -100,7 +109,6 @@ export default function CustomTabBar({
               accessibilityRole="button"
               accessibilityState={isFocused ? { selected: true } : {}}
               accessibilityLabel={options.tabBarAccessibilityLabel}
-              testID={options.tabBarTestID}
               onPress={onPress}
               onLongPress={onLongPress}
               activeOpacity={0.8}
@@ -115,12 +123,12 @@ export default function CustomTabBar({
                 >
                   {isVoiceTab ? (
                     <MaterialCommunityIcons
-                      name={iconName}
+                      name={materialCommunityIconsName}
                       size={24}
                       color="white"
                     />
                   ) : (
-                    <Ionicons name={iconName} size={24} color="white" />
+                    <Ionicons name={ioniconsName} size={24} color="white" />
                   )}
                   <Text style={styles.activeTabText}>{label}</Text>
                 </LinearGradient>
@@ -128,12 +136,12 @@ export default function CustomTabBar({
                 <View style={styles.inactiveTab}>
                   {isVoiceTab ? (
                     <MaterialCommunityIcons
-                      name={iconName}
+                      name={materialCommunityIconsName}
                       size={24}
                       color="white"
                     />
                   ) : (
-                    <Ionicons name={iconName} size={24} color="white" />
+                    <Ionicons name={ioniconsName} size={24} color="white" />
                   )}
                 </View>
               )}

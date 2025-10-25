@@ -1,12 +1,7 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  Platform,
-} from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import Header from './Header';
 
 interface VoiceHeaderProps {
   selectedModel: string;
@@ -21,68 +16,26 @@ export default function VoiceHeader({
   onModelSelect,
   onMore,
 }: VoiceHeaderProps) {
-  return (
-    <View style={styles.header}>
-      {/* Back Button */}
-      <TouchableOpacity
-        style={styles.headerButton}
-        onPress={onBack}
-        activeOpacity={0.7}
-      >
-        <Ionicons name="arrow-back" size={20} color="white" />
-      </TouchableOpacity>
-
-      {/* Model Selector */}
-      <TouchableOpacity
-        style={styles.modelSelector}
-        onPress={onModelSelect}
-        activeOpacity={0.7}
-      >
-        <View style={styles.modelSelectorGradient} />
-        <Text style={styles.modelText}>{selectedModel} </Text>
-        <Ionicons name="chevron-down" size={11} color="white" />
-      </TouchableOpacity>
-
-      {/* More Button */}
-      <TouchableOpacity
-        style={styles.headerButton}
-        onPress={onMore}
-        activeOpacity={0.7}
-      >
-        <Ionicons
-          name="ellipsis-horizontal-circle-outline"
-          size={20}
-          color="white"
-        />
-      </TouchableOpacity>
-    </View>
+  const modelSelector = (
+    <TouchableOpacity
+      style={styles.modelSelector}
+      onPress={onModelSelect}
+      activeOpacity={0.7}
+    >
+      <View style={styles.modelSelectorGradient} />
+      <Text style={styles.modelText}>{selectedModel} </Text>
+      <Ionicons name="chevron-down" size={11} color="white" />
+    </TouchableOpacity>
   );
+
+  return <Header onBack={onBack} onMore={onMore} centralSlot={modelSelector} />;
 }
 
 const styles = StyleSheet.create({
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 12,
-    marginTop: Platform.OS === 'ios' ? 60 : 28,
-  },
-  headerButton: {
-    width: 40,
-    height: 40,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.5)',
-    borderRadius: 100,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   modelSelector: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    borderWidth: 1,
-    borderColor: '#65C6FE',
     borderRadius: 100,
     paddingHorizontal: 12,
     paddingVertical: 8,
