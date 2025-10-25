@@ -52,11 +52,9 @@ export default function ChatMessage({
   if (message.type === 'ai') {
     return (
       <View style={styles.messageContainer}>
-        <View style={styles.messageWrapper}>
-          <View style={styles.messageBubble}>
-            <Text style={styles.messageText}>{message.content}</Text>
-            <Text style={styles.timestamp}>{message.timestamp}</Text>
-          </View>
+        <View style={styles.messageBubble}>
+          <Text style={styles.messageText}>{message.content}</Text>
+          <Text style={styles.timestamp}>{message.timestamp}</Text>
           <View style={styles.messageActions}>
             <TouchableOpacity style={styles.actionButton} onPress={handleCopy}>
               <Ionicons name="copy-outline" size={16} color="#D4D4D4" />
@@ -97,13 +95,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     paddingHorizontal: 16,
   },
-  messageWrapper: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: 8,
-  },
   messageBubble: {
-    flex: 1,
     backgroundColor: 'rgba(255, 255, 255, 0.05)',
     borderRadius: 16,
     padding: 16,
@@ -122,9 +114,10 @@ const styles = StyleSheet.create({
     opacity: 0.7,
   },
   messageActions: {
-    flexDirection: 'column',
-    gap: 4,
-    marginTop: 4,
+    flexDirection: 'row',
+    gap: 8,
+    marginTop: 12,
+    justifyContent: 'flex-start',
   },
   actionButton: {
     width: 32,

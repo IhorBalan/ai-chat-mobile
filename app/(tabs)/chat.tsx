@@ -139,13 +139,10 @@ export default function ChatBotScreen() {
           message={{
             id: 1,
             type: 'ai',
-            content: `Learning User Interface (UI) and User Experience (UX) design is a journey into creating digital products that are not only visually appealing but also intuitive and enjoyable to use.
+            content: `UI/UX design creates digital products that are both visually appealing and intuitive.
 
-1. User Experience (UX) Design
-is the all-encompassing experience a user has with a product or service. It's about making a product functional, reliable, usable, and pleasurable.
-
-2. User Interface (UI) Design
-on the other hand, is the visual and interactive part of the product. It's what the user sees and interacts with, including screens, buttons, icons, and typography.`,
+1. UX Design - The overall user experience
+2. UI Design - The visual and interactive elements`,
             timestamp: '2:30 PM',
           }}
           onCopy={handleCopy}
@@ -190,15 +187,17 @@ on the other hand, is the visual and interactive part of the product. It's what 
           }}
         />
 
-        {/* AI Response with Alarm */}
+        {/* AI Response */}
         <ChatMessage
           message={{
             id: 3,
             type: 'ai',
-            content: `Sure, here the alarm set to 9 AM,
+            content: `Great question! Always put the user first and think about how they'll interact with your design.
 
-⏰ Alarm: ${alarmTime}
-[Cancel] [Confirm]`,
+Key tips:
+- Start with user research
+- Create wireframes first
+- Test with real users`,
             timestamp: '2:33 PM',
           }}
           onCopy={handleCopy}
@@ -274,7 +273,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   chatContent: {
-    paddingHorizontal: 16,
     paddingTop: 16,
   },
   dateDivider: {
