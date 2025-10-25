@@ -273,9 +273,11 @@ export default function VoiceAIScreen() {
 
         <Text style={[styles.text, styles.highlightedText]}>
           {transcribedText}
-          {!isRecording &&
-            !transcribedText &&
-            'Tap the microphone to start recording...'}
+          {!isRecording && !transcribedText && (
+            <Text style={{ opacity: 0.5, fontSize: 16, fontWeight: '500' }}>
+              Tap the microphone to start recording...
+            </Text>
+          )}
         </Text>
       </View>
 
