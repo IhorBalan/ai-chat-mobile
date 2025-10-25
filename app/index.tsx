@@ -8,18 +8,20 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Dimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import CustomTextInput from '../src/components/CustomTextInput';
+import PasswordInput from '../src/components/PasswordInput';
 
 export default function LoginScreen() {
   const router = useRouter();
   const [email, setEmail] = useState('abhixyzxyz@gmail.com');
   const [password, setPassword] = useState('password123');
-  const [passwordVisible, setPasswordVisible] = useState(false);
 
   const handleLogin = () => {
     // Navigate to home screen (tabs)
@@ -44,129 +46,114 @@ export default function LoginScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
-      <KeyboardAvoidingView
-        style={styles.keyboardAvoidingView}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    <View style={styles.container}>
+      {/* Background gradient shapes - outside SafeAreaView */}
+      <View style={styles.backgroundShapesContainer}>
+        <View style={[styles.gradientCircle1, styles.blurEffect]} />
+        <View style={[styles.gradientCircle2, styles.blurEffect]} />
+      </View>
+
+      <SafeAreaView
+        style={styles.safeAreaContainer}
+        edges={['top', 'left', 'right']}
       >
-        <StatusBar style="light" />
-        <ScrollView
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={false}
+        <KeyboardAvoidingView
+          style={styles.keyboardAvoidingView}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
-          {/* Background gradient shapes */}
-          <View style={styles.backgroundShapesContainer}>
-            <View style={[styles.gradientCircle1, styles.blurEffect]} />
-            <View style={[styles.gradientCircle2, styles.blurEffect]} />
-          </View>
+          <StatusBar style="light" />
+          <ScrollView
+            contentContainerStyle={styles.scrollContent}
+            showsVerticalScrollIndicator={false}
+          >
+            {/* Header */}
+            <View style={styles.headerContainer}>
+              <Text style={styles.headerTitle}>
+                Sign in to your{'\n'}Account
+              </Text>
+              <Text style={styles.headerSubtitle}>
+                Please enter your credentials to continue.
+              </Text>
+            </View>
 
-          {/* Header */}
-          <View style={styles.headerContainer}>
-            <Text style={styles.headerTitle}>Sign in to your{'\n'}Account</Text>
-            <Text style={styles.headerSubtitle}>
-              Please enter your credentials to continue.
-            </Text>
-          </View>
-
-          {/* Form */}
-          <View style={styles.formContainer}>
-            {/* Email Input */}
-            <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel}>Email</Text>
-              <TextInput
-                style={styles.input}
+            {/* Form */}
+            <View style={styles.formContainer}>
+              {/* Email Input */}
+              <CustomTextInput
+                label="Email"
                 value={email}
                 onChangeText={setEmail}
                 placeholder="Enter your email"
-                placeholderTextColor="rgba(255, 255, 255, 0.5)"
                 keyboardType="email-address"
                 autoCapitalize="none"
               />
-              <View style={styles.inputUnderline} />
-            </View>
 
-            {/* Password Input */}
-            <View style={styles.inputContainer}>
-              <View style={styles.passwordHeader}>
-                <Text style={styles.inputLabel}>Password</Text>
-                <TouchableOpacity
-                  onPress={() => setPasswordVisible(!passwordVisible)}
-                >
-                  <Ionicons
-                    name={passwordVisible ? 'eye-off-outline' : 'eye-outline'}
-                    size={24}
-                    color="white"
-                  />
-                </TouchableOpacity>
-              </View>
-              <TextInput
-                style={styles.input}
+              {/* Password Input */}
+              <PasswordInput
+                label="Password"
                 value={password}
                 onChangeText={setPassword}
                 placeholder="Enter your password"
-                placeholderTextColor="rgba(255, 255, 255, 0.5)"
-                secureTextEntry={!passwordVisible}
               />
-              <View style={styles.inputUnderline} />
             </View>
-          </View>
 
-          {/* Login Button */}
-          <TouchableOpacity
-            style={styles.loginButtonContainer}
-            onPress={handleLogin}
-            activeOpacity={0.8}
-          >
-            <LinearGradient
-              colors={['#00A0FE', '#0385FE']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={styles.loginButton}
-            >
-              <Text style={styles.loginButtonText}>Login</Text>
-            </LinearGradient>
-          </TouchableOpacity>
-
-          {/* Divider */}
-          <View style={styles.dividerContainer}>
-            <View style={styles.dividerLine} />
-            <Text style={styles.dividerText}>Or login with</Text>
-            <View style={styles.dividerLine} />
-          </View>
-
-          {/* Social Login Buttons */}
-          <View style={styles.socialButtonsContainer}>
+            {/* Login Button */}
             <TouchableOpacity
-              style={styles.socialButton}
-              onPress={handleAppleLogin}
-              activeOpacity={0.7}
+              style={styles.loginButtonContainer}
+              onPress={handleLogin}
+              activeOpacity={0.8}
             >
-              <Ionicons name="logo-apple" size={28} color="white" />
-              <Text style={styles.socialButtonText}>Apple</Text>
+              <LinearGradient
+                colors={['#00A0FE', '#0385FE']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={styles.loginButton}
+              >
+                <Text style={styles.loginButtonText}>Login</Text>
+              </LinearGradient>
             </TouchableOpacity>
 
-            <TouchableOpacity
-              style={styles.socialButton}
-              onPress={handleGoogleLogin}
-              activeOpacity={0.7}
-            >
-              <Ionicons name="logo-google" size={28} color="white" />
-              <Text style={styles.socialButtonText}>Google</Text>
-            </TouchableOpacity>
-          </View>
+            {/* Divider */}
+            <View style={styles.dividerContainer}>
+              <View style={styles.dividerLine} />
+              <Text style={styles.dividerText}>Or login with</Text>
+              <View style={styles.dividerLine} />
+            </View>
 
-          {/* Register Link */}
-          <View style={styles.registerContainer}>
-            <Text style={styles.registerText}>
-              Don't have account?{' '}
-              <Text style={styles.registerLink} onPress={handleRegister}>
-                Register
+            {/* Social Login Buttons */}
+            <View style={styles.socialButtonsContainer}>
+              <TouchableOpacity
+                style={styles.socialButton}
+                onPress={handleAppleLogin}
+                activeOpacity={0.7}
+              >
+                <Ionicons name="logo-apple" size={28} color="white" />
+                <Text style={styles.socialButtonText}>Apple</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.socialButton}
+                onPress={handleGoogleLogin}
+                activeOpacity={0.7}
+              >
+                <Ionicons name="logo-google" size={28} color="white" />
+                <Text style={styles.socialButtonText}>Google</Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* Register Link */}
+            <View style={styles.registerContainer}>
+              <Text style={styles.registerText}>
+                Don't have account?{' '}
+                <Text style={styles.registerLink} onPress={handleRegister}>
+                  Register
+                </Text>
               </Text>
-            </Text>
-          </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+            </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </View>
   );
 }
 
@@ -174,6 +161,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#080F1A',
+  },
+  safeAreaContainer: {
+    flex: 1,
   },
   keyboardAvoidingView: {
     flex: 1,
@@ -187,26 +177,26 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    height: 400,
+    bottom: 0,
     overflow: 'hidden',
   },
   gradientCircle1: {
     position: 'absolute',
-    width: 957,
-    height: 647,
-    borderRadius: 500,
-    backgroundColor: 'rgba(0, 56, 102, 0.6)',
-    left: -291,
-    top: -361,
+    width: 1000,
+    height: 1000,
+    borderRadius: 1000,
+    backgroundColor: 'rgba(51, 181, 255, 0.1)',
+    left: (Dimensions.get('window').width - 1000) / 2,
+    top: -820,
   },
   gradientCircle2: {
     position: 'absolute',
-    width: 723,
-    height: 413,
-    borderRadius: 400,
-    backgroundColor: 'rgba(3, 78, 128, 0.5)',
-    left: -174,
-    top: -206,
+    width: 1000,
+    height: 1000,
+    borderRadius: 1000,
+    backgroundColor: 'rgba(0, 163, 255, 0.2)',
+    left: (Dimensions.get('window').width - 1000) / 2,
+    top: -750,
   },
   blurEffect: {
     shadowColor: '#00A0FE',
@@ -216,8 +206,7 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     alignItems: 'center',
-    marginBottom: 80,
-    marginTop: Platform.OS === 'ios' ? 60 : 40,
+    paddingVertical: 60,
   },
   headerTitle: {
     fontSize: 24,
@@ -231,32 +220,11 @@ const styles = StyleSheet.create({
     color: 'white',
     textAlign: 'center',
     opacity: 0.8,
+    maxWidth: 220
   },
   formContainer: {
     gap: 24,
     marginBottom: 24,
-  },
-  inputContainer: {
-    gap: 10,
-  },
-  inputLabel: {
-    fontSize: 16,
-    color: 'white',
-    fontWeight: '400',
-  },
-  input: {
-    fontSize: 15,
-    color: 'white',
-    paddingVertical: 8,
-  },
-  inputUnderline: {
-    height: 2,
-    backgroundColor: '#D9D9D9',
-  },
-  passwordHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
   },
   loginButtonContainer: {
     marginBottom: 30,
