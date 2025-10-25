@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
   Text,
@@ -11,6 +11,7 @@ import {
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { useFocusEffect } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Header from '../../src/components/Header';
 import BottomInputBar from '../../src/components/BottomInputBar';
@@ -29,6 +30,19 @@ export default function ChatBotScreen() {
   const [message, setMessage] = useState('');
   const [selectedModel, setSelectedModel] = useState('Axel 2.5 Pro');
   const [alarmTime, setAlarmTime] = useState('09:00 AM');
+  const scrollViewRef = useRef<ScrollView>(null);
+
+  // Scroll to bottom when screen opens
+  useFocusEffect(
+    React.useCallback(() => {
+      // Small delay to ensure content is rendered
+      const timer = setTimeout(() => {
+        scrollViewRef.current?.scrollToEnd({ animated: true });
+      }, 100);
+
+      return () => clearTimeout(timer);
+    }, [])
+  );
 
   const messages: Message[] = [
     {
@@ -130,6 +144,7 @@ export default function ChatBotScreen() {
 
       {/* Chat Area */}
       <ScrollView
+        ref={scrollViewRef}
         style={styles.chatContainer}
         contentContainerStyle={styles.chatContent}
         showsVerticalScrollIndicator={false}

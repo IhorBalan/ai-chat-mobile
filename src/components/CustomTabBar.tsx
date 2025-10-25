@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
     height: 68,
     paddingHorizontal: 8,
     gap: 4,
-    marginBottom: 8,
+    marginBottom: 16,
   },
   tabButtonActive: {
     height: 52,
