@@ -11,33 +11,56 @@ import { StatusBar } from 'expo-status-bar';
 import { LinearGradient } from 'expo-linear-gradient';
 import MaskedView from '@react-native-masked-view/masked-view';
 import { useRouter, useFocusEffect } from 'expo-router';
-import { Audio } from 'expo-av';
+import {
+  useAudioRecorder,
+  useAudioRecorderState,
+  RecordingPresets,
+  requestRecordingPermissionsAsync,
+  setAudioModeAsync,
+} from 'expo-audio';
 import Voice from '@react-native-voice/voice';
 import VoiceHeader from '../../src/components/VoiceHeader';
 import VoiceControls from '../../src/components/VoiceControls';
 import VoiceAnimation from '../../src/components/VoiceAnimation';
 import DecorationSvg from '../../src/components/DecorationSvg';
 
-export default function VoiceAIScreen() {
+export default function VoiceScreen() {
   const router = useRouter();
-  const [isRecording, setIsRecording] = useState(false);
   const [selectedModel, setSelectedModel] = useState('Axel 2.5 Pro');
   const [shouldAnimate, setShouldAnimate] = useState(false);
-  const [recording, setRecording] = useState<Audio.Recording | null>(null);
-  const [recordingUri, setRecordingUri] = useState<string | null>(null);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [transcribedText, setTranscribedText] = useState<string>('');
   const [isListening, setIsListening] = useState<boolean>(false);
   const [speechError, setSpeechError] = useState<string>('');
   const textFadeAnim = useRef(new Animated.Value(0)).current;
 
-  // Request audio recording permission
+  // Initialize audio recorder with high quality preset
+  const audioRecorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY, (status) => {
+    console.log('Recording status:', status);
+  });
+
+  const recordingState = useAudioRecorderState(audioRecorder);
+  const isRecording = recordingState.isRecording;
+
+  // Request audio recording permission and set audio mode
   useEffect(() => {
-    async function getPermission() {
-      const { status } = await Audio.requestPermissionsAsync();
-      setHasPermission(status === 'granted');
+    async function setupAudio() {
+      try {
+        // Set audio mode to allow recording
+        await setAudioModeAsync({
+          allowsRecording: true,
+          playsInSilentMode: true,
+        });
+
+        // Request recording permissions
+        const result = await requestRecordingPermissionsAsync();
+        setHasPermission(result.granted);
+      } catch (error) {
+        console.error('Audio setup error:', error);
+        setHasPermission(false);
+      }
     }
-    getPermission();
+    setupAudio();
   }, []);
 
   // Initialize Voice recognition
@@ -73,18 +96,18 @@ export default function VoiceAIScreen() {
   // Cleanup recording on unmount
   useEffect(() => {
     return () => {
-      if (recording) {
+      if (isRecording) {
         try {
-          recording.stopAndUnloadAsync();
+          audioRecorder.stop();
         } catch (error) {
           console.log(
-            'Recording already unloaded or error during cleanup:',
+            'Recording already stopped or error during cleanup:',
             error
           );
         }
       }
     };
-  }, [recording]);
+  }, [isRecording, audioRecorder]);
 
   // Debug logging
   useEffect(() => {
@@ -95,8 +118,8 @@ export default function VoiceAIScreen() {
       'Permission:',
       hasPermission ? 'Granted' : hasPermission === false ? 'Denied' : 'Unknown'
     );
-    if (recordingUri) {
-      console.log('Last Recording URI:', recordingUri);
+    if (audioRecorder.uri) {
+      console.log('Last Recording URI:', audioRecorder.uri);
     }
     if (transcribedText) {
       console.log('Transcribed Text:', transcribedText);
@@ -109,7 +132,7 @@ export default function VoiceAIScreen() {
     isRecording,
     isListening,
     hasPermission,
-    recordingUri,
+    audioRecorder.uri,
     transcribedText,
     speechError,
   ]);
@@ -139,19 +162,18 @@ export default function VoiceAIScreen() {
         // Reset screen state when leaving
         resetScreenState();
       };
-    }, [recording])
+    }, [isRecording])
   );
 
   const resetScreenState = async () => {
     try {
       // Stop any ongoing recording
-      if (recording) {
+      if (isRecording) {
         try {
-          await recording.stopAndUnloadAsync();
+          await audioRecorder.stop();
         } catch (error) {
           console.log('Recording already stopped during reset:', error);
         }
-        setRecording(null);
       }
 
       // Stop speech recognition
@@ -162,10 +184,8 @@ export default function VoiceAIScreen() {
       }
 
       // Reset all states
-      setIsRecording(false);
       setIsListening(false);
       setTranscribedText('');
-      setRecordingUri(null);
       setSpeechError('');
 
       // Reset animations
@@ -201,16 +221,7 @@ export default function VoiceAIScreen() {
     if (isRecording) {
       // Stop recording and speech recognition
       try {
-        if (recording) {
-          try {
-            await recording.stopAndUnloadAsync();
-            const uri = recording.getURI();
-            setRecordingUri(uri);
-          } catch (recordingError) {
-            console.log('Recording already stopped or error:', recordingError);
-          }
-          setRecording(null);
-        }
+        await audioRecorder.stop();
 
         // Stop speech recognition
         try {
@@ -219,13 +230,12 @@ export default function VoiceAIScreen() {
           console.log('Voice already stopped or error:', voiceError);
         }
 
-        setIsRecording(false);
         setIsListening(false);
         console.log('Recording and speech recognition stopped');
+        console.log('Recording URI:', audioRecorder.uri);
       } catch (error) {
         console.error('Failed to stop recording:', error);
         // Don't show alert for cleanup errors, just log them
-        setIsRecording(false);
         setIsListening(false);
       }
     } else {
@@ -239,17 +249,8 @@ export default function VoiceAIScreen() {
         await Voice.start('en-US');
 
         // Start audio recording
-        await Audio.setAudioModeAsync({
-          allowsRecordingIOS: true,
-          playsInSilentModeIOS: true,
-        });
+        await audioRecorder.record();
 
-        const { recording: newRecording } = await Audio.Recording.createAsync(
-          Audio.RecordingOptionsPresets.HIGH_QUALITY
-        );
-
-        setRecording(newRecording);
-        setIsRecording(true);
         console.log('Recording and speech recognition started');
       } catch (error) {
         console.error('Failed to start recording:', error);

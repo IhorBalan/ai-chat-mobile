@@ -1,7 +1,4 @@
 PODS:
-  - EXAV (16.0.7):
-    - ExpoModulesCore
-    - ReactCommon/turbomodule/core
   - EXConstants (18.0.10):
     - ExpoModulesCore
   - Expo (54.0.20):
@@ -30,6 +27,8 @@ PODS:
     - ReactNativeDependencies
     - Yoga
   - ExpoAsset (12.0.9):
+    - ExpoModulesCore
+  - ExpoAudio (1.0.13):
     - ExpoModulesCore
   - ExpoFileSystem (19.0.17):
     - ExpoModulesCore
@@ -1916,10 +1915,10 @@ PODS:
   - Yoga (0.0.0)
 
 DEPENDENCIES:
-  - EXAV (from `../node_modules/expo-av/ios`)
   - EXConstants (from `../node_modules/expo-constants/ios`)
   - Expo (from `../node_modules/expo`)
   - ExpoAsset (from `../node_modules/expo-asset/ios`)
+  - ExpoAudio (from `../node_modules/expo-audio/ios`)
   - ExpoFileSystem (from `../node_modules/expo-file-system/ios`)
   - ExpoFont (from `../node_modules/expo-font/ios`)
   - ExpoHead (from `../node_modules/expo-router/ios`)
@@ -2009,14 +2008,14 @@ SPEC REPOS:
     - lottie-ios
 
 EXTERNAL SOURCES:
-  EXAV:
-    :path: "../node_modules/expo-av/ios"
   EXConstants:
     :path: "../node_modules/expo-constants/ios"
   Expo:
     :path: "../node_modules/expo"
   ExpoAsset:
     :path: "../node_modules/expo-asset/ios"
+  ExpoAudio:
+    :path: "../node_modules/expo-audio/ios"
   ExpoFileSystem:
     :path: "../node_modules/expo-file-system/ios"
   ExpoFont:
@@ -2184,10 +2183,10 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
-  EXAV: f33ecd2d85522045cb1f0cc2fae3aa53e4e0c3c0
   EXConstants: e6e50cdfcb4524f40121d1fdcff24e97b7dcd2fd
   Expo: 5440d26c2a3771434bffa19060b91ebce4d4c94e
   ExpoAsset: 3c3b7dd9b1318846a02ef05ce420e63d542aeb9f
+  ExpoAudio: ab777892702d1efb1ab758cb348434228b8d880b
   ExpoFileSystem: 56f081328f5b48a6dcc8302eee51d4f2d9d0049b
   ExpoFont: b881d43057dceb7b31ff767b24f612609e80f60f
   ExpoHead: 4c455257904ca03439313df0d91292b7af1fd6ee
@@ -2274,4 +2273,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 410b8ee1a86d6331f8ca15528ebeaf55677009f3
 
-COCOAPODS: 1.16.2
+COCOAPODS: 1.15.2
