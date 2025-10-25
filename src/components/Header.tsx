@@ -1,5 +1,12 @@
-import React from 'react';
-import { View, TouchableOpacity, StyleSheet, Platform } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import {
+  View,
+  TouchableOpacity,
+  StyleSheet,
+  Platform,
+  Animated,
+} from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 
 interface HeaderProps {
@@ -8,6 +15,7 @@ interface HeaderProps {
   showBack?: boolean;
   showMore?: boolean;
   centralSlot?: React.ReactNode;
+  shouldAnimate?: boolean;
 }
 
 export default function Header({
@@ -16,9 +24,44 @@ export default function Header({
   showBack = true,
   showMore = true,
   centralSlot,
+  shouldAnimate = false,
 }: HeaderProps) {
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  useFocusEffect(
+    React.useCallback(() => {
+      if (shouldAnimate) {
+        // Reset animation value
+        fadeAnim.setValue(0);
+
+        // Start animation
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 300,
+          useNativeDriver: true,
+        }).start();
+      } else {
+        fadeAnim.setValue(1);
+      }
+    }, [shouldAnimate, fadeAnim])
+  );
   return (
-    <View style={styles.header}>
+    <Animated.View
+      style={[
+        styles.header,
+        {
+          opacity: fadeAnim,
+          transform: [
+            {
+              translateY: fadeAnim.interpolate({
+                inputRange: [0, 1],
+                outputRange: [-50, 0],
+              }),
+            },
+          ],
+        },
+      ]}
+    >
       {/* Back Button */}
       {showBack && (
         <TouchableOpacity
@@ -53,7 +96,7 @@ export default function Header({
 
       {/* Spacer when more button is hidden */}
       {!showMore && <View style={styles.headerButton} />}
-    </View>
+    </Animated.View>
   );
 }
 

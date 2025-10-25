@@ -1,5 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Platform, Alert } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Platform,
+  Alert,
+  Animated,
+} from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { LinearGradient } from 'expo-linear-gradient';
 import MaskedView from '@react-native-masked-view/masked-view';
@@ -22,6 +29,7 @@ export default function VoiceAIScreen() {
   const [transcribedText, setTranscribedText] = useState<string>('');
   const [isListening, setIsListening] = useState<boolean>(false);
   const [speechError, setSpeechError] = useState<string>('');
+  const textFadeAnim = useRef(new Animated.Value(0)).current;
 
   // Request audio recording permission
   useEffect(() => {
@@ -116,8 +124,18 @@ export default function VoiceAIScreen() {
         setShouldAnimate(false);
       }, 100);
 
+      // Start text fade-in animation after voice controls appear
+      const textTimer = setTimeout(() => {
+        Animated.timing(textFadeAnim, {
+          toValue: 1,
+          duration: 800,
+          useNativeDriver: true,
+        }).start();
+      }, 1200); // Delay after voice controls animation
+
       return () => {
         clearTimeout(timer);
+        clearTimeout(textTimer);
         // Reset screen state when leaving
         resetScreenState();
       };
@@ -149,6 +167,9 @@ export default function VoiceAIScreen() {
       setTranscribedText('');
       setRecordingUri(null);
       setSpeechError('');
+
+      // Reset animations
+      textFadeAnim.setValue(0);
 
       console.log('Screen state reset');
     } catch (error) {
@@ -264,22 +285,44 @@ export default function VoiceAIScreen() {
         onBack={handleBack}
         onModelSelect={handleModelSelect}
         onMore={handleMore}
+        shouldAnimate={false}
       />
 
       {/* Text Content */}
-      <View style={styles.textContainer}>
+      <Animated.View
+        style={[
+          styles.textContainer,
+          {
+            opacity: textFadeAnim,
+            transform: [
+              {
+                translateY: textFadeAnim.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [0, 10],
+                }),
+              },
+            ],
+          },
+        ]}
+      >
         {/* Voice Animation - Show when recording */}
         <VoiceAnimation isVisible={false} />
 
         <Text style={[styles.text, styles.highlightedText]}>
           {transcribedText}
           {!isRecording && !transcribedText && (
-            <Text style={{ opacity: 0.5, fontSize: 16, fontWeight: '500' }}>
+            <Text
+              style={{
+                opacity: 0.5,
+                fontSize: 16,
+                fontWeight: '500',
+              }}
+            >
               Tap the microphone to start recording...
             </Text>
           )}
         </Text>
-      </View>
+      </Animated.View>
 
       {/* Voice Controls */}
       <VoiceControls

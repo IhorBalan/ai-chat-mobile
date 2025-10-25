@@ -11,6 +11,10 @@ import { StatusBar } from 'expo-status-bar';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import Header from '../../src/components/Header';
+import DecorationSvg from '../../src/components/DecorationSvg';
+import Paper from '../../src/components/Paper';
+import MenuItem from '../../src/components/MenuItem';
 
 export default function ProfileScreen() {
   const router = useRouter();
@@ -62,63 +66,51 @@ export default function ProfileScreen() {
     <View style={styles.container}>
       <StatusBar style="light" />
 
-      {/* Background Gradient Effects */}
-      <View style={styles.backgroundGradients}>
-        <View style={[styles.gradientCircle, styles.gradientTop]} />
-        <View style={[styles.gradientCircle, styles.gradientBottom]} />
+      {/* Decoration SVG */}
+      <View style={styles.decorationContainer}>
+        <DecorationSvg width={380} height={251} />
+      </View>
+      {/* Decoration SVG */}
+      <View style={styles.decorationContainer2}>
+        <DecorationSvg width={380} height={251} />
       </View>
 
       {/* Header */}
-      <View style={styles.header}>
-        {/* Back Button */}
-        <TouchableOpacity
-          style={styles.headerButton}
-          onPress={handleBack}
-          activeOpacity={0.7}
-        >
-          <Ionicons name="arrow-back" size={20} color="white" />
-        </TouchableOpacity>
-
-        {/* Title */}
-        <Text style={styles.headerTitle}>My Profile</Text>
-
-        {/* Edit Button */}
-        <TouchableOpacity
-          style={styles.headerButton}
-          onPress={handleEdit}
-          activeOpacity={0.7}
-        >
-          <Ionicons name="create-outline" size={20} color="white" />
-        </TouchableOpacity>
-      </View>
+      <Header
+        onBack={handleBack}
+        onMore={handleEdit}
+        centralSlot={<Text style={styles.headerTitle}>My Profile</Text>}
+      />
 
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* Profile Picture */}
-        <View style={styles.profilePictureContainer}>
-          <View style={styles.profilePicture}>
-            {/* Placeholder for profile image */}
+        <View style={{ gap: 10, alignItems: 'center', paddingTop: 30 }}>
+          {/* Profile Picture */}
+          <View style={styles.profilePictureContainer}>
+            <View style={styles.profilePicture}>
+              {/* Placeholder for profile image */}
+            </View>
+            <TouchableOpacity
+              style={styles.cameraButton}
+              onPress={handleChangePhoto}
+              activeOpacity={0.8}
+            >
+              <Ionicons name="camera" size={24} color="white" />
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity
-            style={styles.cameraButton}
-            onPress={handleChangePhoto}
-            activeOpacity={0.8}
-          >
-            <Ionicons name="camera" size={24} color="white" />
-          </TouchableOpacity>
-        </View>
 
-        {/* User Info */}
-        <View style={styles.userInfoContainer}>
-          <Text style={styles.userName}>Rhadini Abigail</Text>
-          <Text style={styles.userEmail}>abigailrha@axel.io</Text>
+          {/* User Info */}
+          <View style={styles.userInfoContainer}>
+            <Text style={styles.userName}>Rhadini Abigail</Text>
+            <Text style={styles.userEmail}>abigailrha@axel.io</Text>
+          </View>
         </View>
 
         {/* Daily Quota Card */}
-        <View style={styles.quotaCard}>
+        <Paper style={styles.quotaCard}>
           <View style={styles.quotaHeader}>
             <Text style={styles.quotaLabel}>Daily Quota</Text>
             <Text style={styles.quotaCount}>
@@ -130,41 +122,29 @@ export default function ProfileScreen() {
               style={[styles.progressBar, { width: `${quotaPercentage}%` }]}
             />
           </View>
-        </View>
+        </Paper>
 
         {/* Account Section */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Account</Text>
           <View style={styles.menuList}>
-            <TouchableOpacity
-              style={styles.menuItem}
+            <MenuItem
+              icon="shield-checkmark-outline"
+              text="Account Setting"
               onPress={handleAccountSetting}
-              activeOpacity={0.7}
-            >
-              <Ionicons name="shield-checkmark-outline" size={24} color="white" />
-              <Text style={styles.menuText}>Account Setting</Text>
-              <Ionicons name="chevron-forward" size={24} color="white" />
-            </TouchableOpacity>
+            />
 
-            <TouchableOpacity
-              style={styles.menuItem}
+            <MenuItem
+              icon="lock-closed-outline"
+              text="Security Information"
               onPress={handleSecurityInfo}
-              activeOpacity={0.7}
-            >
-              <Ionicons name="lock-closed-outline" size={24} color="white" />
-              <Text style={styles.menuText}>Security Information</Text>
-              <Ionicons name="chevron-forward" size={24} color="white" />
-            </TouchableOpacity>
+            />
 
-            <TouchableOpacity
-              style={styles.menuItem}
+            <MenuItem
+              icon="card-outline"
+              text="Payment Method"
               onPress={handlePaymentMethod}
-              activeOpacity={0.7}
-            >
-              <Ionicons name="card-outline" size={24} color="white" />
-              <Text style={styles.menuText}>Payment Method</Text>
-              <Ionicons name="chevron-forward" size={24} color="white" />
-            </TouchableOpacity>
+            />
           </View>
         </View>
 
@@ -172,49 +152,35 @@ export default function ProfileScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Support</Text>
           <View style={styles.menuList}>
-            <TouchableOpacity
-              style={styles.menuItem}
+            <MenuItem
+              icon="help-circle-outline"
+              text="Help Center"
               onPress={handleHelpCenter}
-              activeOpacity={0.7}
-            >
-              <Ionicons name="help-circle-outline" size={24} color="white" />
-              <Text style={styles.menuText}>Help Center</Text>
-              <Ionicons name="chevron-forward" size={24} color="white" />
-            </TouchableOpacity>
+            />
 
-            <TouchableOpacity
-              style={styles.menuItem}
+            <MenuItem
+              icon="document-text-outline"
+              text="Privacy Policy"
               onPress={handlePrivacyPolicy}
-              activeOpacity={0.7}
-            >
-              <Ionicons name="document-text-outline" size={24} color="white" />
-              <Text style={styles.menuText}>Privacy Policy</Text>
-              <Ionicons name="chevron-forward" size={24} color="white" />
-            </TouchableOpacity>
+            />
 
-            <TouchableOpacity
-              style={styles.menuItem}
+            <MenuItem
+              icon="chatbox-outline"
+              text="Send Feedback"
               onPress={handleSendFeedback}
-              activeOpacity={0.7}
-            >
-              <Ionicons name="chatbox-outline" size={24} color="white" />
-              <Text style={styles.menuText}>Send Feedback</Text>
-              <Ionicons name="chevron-forward" size={24} color="white" />
-            </TouchableOpacity>
+            />
           </View>
         </View>
 
         {/* Logout Section */}
         <View style={styles.section}>
           <View style={styles.menuList}>
-            <TouchableOpacity
-              style={[styles.menuItem, styles.logoutButton]}
+            <MenuItem
+              icon="log-out-outline"
+              text="Logout"
               onPress={handleLogout}
-              activeOpacity={0.7}
-            >
-              <Ionicons name="log-out-outline" size={24} color="#FF4444" />
-              <Text style={[styles.menuText, styles.logoutText]}>Logout</Text>
-            </TouchableOpacity>
+              showChevron={false}
+            />
           </View>
         </View>
 
@@ -222,14 +188,8 @@ export default function ProfileScreen() {
         <View style={styles.bottomSpacer} />
       </ScrollView>
 
-      {/* Bottom Gradient Fade */}
-      <LinearGradient
-        colors={['rgba(8, 15, 26, 0)', '#080F1A']}
-        style={styles.bottomGradient}
-        pointerEvents="none"
-      >
-        <View style={styles.homeIndicator} />
-      </LinearGradient>
+      {/* Home Indicator */}
+      <View style={styles.homeIndicator} />
     </View>
   );
 }
@@ -239,55 +199,21 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#080F1A',
   },
-  backgroundGradients: {
+  decorationContainer: {
     position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
+    bottom: -60,
+    left: -5,
+    zIndex: 0,
+    opacity: 0.7,
+    pointerEvents: 'none',
   },
-  gradientCircle: {
+  decorationContainer2: {
     position: 'absolute',
-    width: 544,
-    height: 462,
-    borderRadius: 300,
-    opacity: 0.15,
-  },
-  gradientTop: {
-    backgroundColor: '#00A3FF',
-    top: -129,
-    left: 118,
-    shadowColor: '#00A3FF',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.5,
-    shadowRadius: 100,
-  },
-  gradientBottom: {
-    backgroundColor: '#00A3FF',
-    bottom: 0,
-    left: 49,
-    shadowColor: '#00A3FF',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.5,
-    shadowRadius: 100,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 12,
-    marginTop: Platform.OS === 'ios' ? 60 : 24,
-    marginBottom: 24,
-  },
-  headerButton: {
-    width: 40,
-    height: 40,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.5)',
-    borderRadius: 100,
-    alignItems: 'center',
-    justifyContent: 'center',
+    top: -65,
+    left: -65,
+    zIndex: 0,
+    opacity: 0.7,
+    pointerEvents: 'none',
   },
   headerTitle: {
     fontSize: 18,
@@ -301,6 +227,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: 16,
     alignItems: 'center',
+    gap: 30,
   },
   profilePictureContainer: {
     width: 112,
@@ -345,18 +272,13 @@ const styles = StyleSheet.create({
   },
   quotaCard: {
     width: '100%',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.5)',
-    borderRadius: 16,
-    padding: 16,
-    marginBottom: 24,
   },
   quotaHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 12,
+    width: '100%',
   },
   quotaLabel: {
     fontSize: 14,
@@ -387,53 +309,19 @@ const styles = StyleSheet.create({
   },
   section: {
     width: '100%',
-    marginBottom: 24,
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: '500',
     color: 'white',
     letterSpacing: 0.5,
-    marginBottom: 12,
+    marginBottom: 20,
   },
   menuList: {
     gap: 8,
   },
-  menuItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.5)',
-    borderRadius: 100,
-    paddingLeft: 16,
-    paddingRight: 12,
-    paddingVertical: 12,
-    height: 48,
-    gap: 8,
-  },
-  menuText: {
-    flex: 1,
-    fontSize: 14,
-    color: 'white',
-    letterSpacing: 0.5,
-  },
-  logoutButton: {
-    borderColor: '#FF4444',
-  },
-  logoutText: {
-    color: '#FF4444',
-  },
   bottomSpacer: {
     height: 60,
-  },
-  bottomGradient: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    paddingTop: 7,
-    paddingHorizontal: 16,
   },
   homeIndicator: {
     width: 134,
@@ -442,5 +330,6 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     alignSelf: 'center',
     marginBottom: Platform.OS === 'ios' ? 8 : 16,
+    marginTop: 16,
   },
 });

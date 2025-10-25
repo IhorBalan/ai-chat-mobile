@@ -8,6 +8,7 @@ interface VoiceHeaderProps {
   onBack: () => void;
   onModelSelect: () => void;
   onMore: () => void;
+  shouldAnimate?: boolean;
 }
 
 export default function VoiceHeader({
@@ -15,6 +16,7 @@ export default function VoiceHeader({
   onBack,
   onModelSelect,
   onMore,
+  shouldAnimate = true,
 }: VoiceHeaderProps) {
   const modelSelector = (
     <TouchableOpacity
@@ -28,7 +30,14 @@ export default function VoiceHeader({
     </TouchableOpacity>
   );
 
-  return <Header onBack={onBack} onMore={onMore} centralSlot={modelSelector} />;
+  return (
+    <Header
+      onBack={onBack}
+      onMore={onMore}
+      centralSlot={modelSelector}
+      shouldAnimate={shouldAnimate}
+    />
+  );
 }
 
 const styles = StyleSheet.create({

@@ -11,6 +11,7 @@ import {
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import Header from '../../src/components/Header';
 
 interface Message {
   id: number;
@@ -84,35 +85,20 @@ export default function ChatBotScreen() {
       </View>
 
       {/* Header */}
-      <View style={styles.header}>
-        {/* Back Button */}
-        <TouchableOpacity
-          style={styles.headerButton}
-          onPress={handleBack}
-          activeOpacity={0.7}
-        >
-          <Ionicons name="arrow-back" size={20} color="white" />
-        </TouchableOpacity>
-
-        {/* Model Selector */}
-        <TouchableOpacity
-          style={styles.modelSelector}
-          onPress={handleModelSelect}
-          activeOpacity={0.7}
-        >
-          <Text style={styles.modelText}>{selectedModel} </Text>
-          <Ionicons name="chevron-down" size={11} color="white" />
-        </TouchableOpacity>
-
-        {/* Edit Button */}
-        <TouchableOpacity
-          style={styles.headerButton}
-          onPress={handleEdit}
-          activeOpacity={0.7}
-        >
-          <Ionicons name="create-outline" size={20} color="white" />
-        </TouchableOpacity>
-      </View>
+      <Header
+        onBack={handleBack}
+        onMore={handleEdit}
+        centralSlot={
+          <TouchableOpacity
+            style={styles.modelSelector}
+            onPress={handleModelSelect}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.modelText}>{selectedModel} </Text>
+            <Ionicons name="chevron-down" size={11} color="white" />
+          </TouchableOpacity>
+        }
+      />
 
       {/* Chat Area */}
       <ScrollView
@@ -151,9 +137,7 @@ export default function ChatBotScreen() {
             <View style={styles.listSection}>
               <View style={styles.listHeader}>
                 <Text style={styles.listNumber}>2.</Text>
-                <Text style={styles.listTitle}>
-                  User Interface (UI) Design
-                </Text>
+                <Text style={styles.listTitle}>User Interface (UI) Design</Text>
               </View>
               <Text style={styles.listContent}>
                 on the other hand, is the visual and interactive part of the
@@ -186,9 +170,7 @@ export default function ChatBotScreen() {
                     {
                       height: Math.random() * 30 + 10,
                       backgroundColor:
-                        index < 15
-                          ? 'white'
-                          : 'rgba(255, 255, 255, 0.3)',
+                        index < 15 ? 'white' : 'rgba(255, 255, 255, 0.3)',
                     },
                   ]}
                 />
@@ -247,16 +229,10 @@ export default function ChatBotScreen() {
         <View style={styles.inputBar}>
           {/* Left Icons */}
           <View style={styles.inputIcons}>
-            <TouchableOpacity
-              style={styles.inputIcon}
-              onPress={handleCamera}
-            >
+            <TouchableOpacity style={styles.inputIcon} onPress={handleCamera}>
               <Ionicons name="camera-outline" size={24} color="white" />
             </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.inputIcon}
-              onPress={handleImage}
-            >
+            <TouchableOpacity style={styles.inputIcon} onPress={handleImage}>
               <Ionicons name="image-outline" size={24} color="white" />
             </TouchableOpacity>
             <TouchableOpacity
@@ -276,10 +252,7 @@ export default function ChatBotScreen() {
               value={message}
               onChangeText={setMessage}
             />
-            <TouchableOpacity
-              style={styles.sendButton}
-              onPress={handleSend}
-            >
+            <TouchableOpacity style={styles.sendButton} onPress={handleSend}>
               <Ionicons name="send" size={16} color="white" />
             </TouchableOpacity>
           </View>
@@ -328,24 +301,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.5,
     shadowRadius: 100,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 12,
-    marginTop: Platform.OS === 'ios' ? 60 : 24,
-    marginBottom: 8,
-  },
-  headerButton: {
-    width: 40,
-    height: 40,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.5)',
-    borderRadius: 100,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   modelSelector: {
     flexDirection: 'row',
