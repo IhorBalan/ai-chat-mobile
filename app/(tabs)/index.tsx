@@ -15,6 +15,7 @@ import AIAssistantCard from '../../src/components/AIAssistantCard';
 import FeatureCards from '../../src/components/FeatureCards';
 import ContinueConversations from '../../src/components/ContinueConversations';
 import UpgradeBadge from '../../src/components/UpgradeBadge';
+import DecorationSvg from '../../src/components/DecorationSvg';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -67,6 +68,16 @@ export default function HomeScreen() {
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       <StatusBar style="light" />
 
+      {/* Decoration SVG - Top */}
+      <View style={styles.decorationContainer}>
+        <DecorationSvg width={300} height={200} />
+      </View>
+
+      {/* Decoration SVG - Bottom */}
+      <View style={styles.decorationContainer2}>
+        <DecorationSvg width={250} height={165} />
+      </View>
+
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
@@ -91,6 +102,22 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#080F1A',
+  },
+  decorationContainer: {
+    position: 'absolute',
+    top: -50,
+    right: -30,
+    zIndex: 0,
+    opacity: 0.6,
+    pointerEvents: 'none',
+  },
+  decorationContainer2: {
+    position: 'absolute',
+    bottom: 240,
+    left: -20,
+    zIndex: 0,
+    opacity: 0.5,
+    pointerEvents: 'none',
   },
   upgradeButton: {
     alignSelf: 'flex-end',
