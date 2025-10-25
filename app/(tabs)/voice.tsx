@@ -116,7 +116,7 @@ export default function VoiceScreen() {
   // Cleanup recording on unmount
   useEffect(() => {
     return () => {
-      if (isRecording) {
+      if (isRecording || isRecordingLocal) {
         try {
           audioRecorder.stop();
         } catch (error) {
@@ -127,7 +127,7 @@ export default function VoiceScreen() {
         }
       }
     };
-  }, [isRecording, audioRecorder]);
+  }, [isRecording, isRecordingLocal, audioRecorder]);
 
   // Debug logging
   useEffect(() => {
@@ -195,7 +195,7 @@ export default function VoiceScreen() {
   const resetScreenState = async () => {
     try {
       // Stop any ongoing recording
-      if (isRecording) {
+      if (isRecording || isRecordingLocal) {
         try {
           await audioRecorder.stop();
         } catch (error) {
@@ -212,8 +212,11 @@ export default function VoiceScreen() {
 
       // Reset all states
       setIsListening(false);
+      setIsRecordingLocal(false);
       setTranscribedText('');
       setSpeechError('');
+      setAiResponse('');
+      setIsSpeaking(false);
 
       // Reset animations
       textFadeAnim.setValue(0);
