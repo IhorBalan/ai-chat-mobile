@@ -116,9 +116,45 @@ export default function VoiceAIScreen() {
         setShouldAnimate(false);
       }, 100);
 
-      return () => clearTimeout(timer);
-    }, [])
+      return () => {
+        clearTimeout(timer);
+        // Reset screen state when leaving
+        resetScreenState();
+      };
+    }, [recording])
   );
+
+  const resetScreenState = async () => {
+    try {
+      // Stop any ongoing recording
+      if (recording) {
+        try {
+          await recording.stopAndUnloadAsync();
+        } catch (error) {
+          console.log('Recording already stopped during reset:', error);
+        }
+        setRecording(null);
+      }
+
+      // Stop speech recognition
+      try {
+        await Voice.stop();
+      } catch (error) {
+        console.log('Voice already stopped during reset:', error);
+      }
+
+      // Reset all states
+      setIsRecording(false);
+      setIsListening(false);
+      setTranscribedText('');
+      setRecordingUri(null);
+      setSpeechError('');
+
+      console.log('Screen state reset');
+    } catch (error) {
+      console.error('Error during screen reset:', error);
+    }
+  };
 
   const handleBack = () => {
     router.back();
