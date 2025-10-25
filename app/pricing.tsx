@@ -14,6 +14,8 @@ import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import Header from '../src/components/Header';
 import DecorationSvg from '../src/components/DecorationSvg';
+import PlanToggle from '../src/components/PlanToggle';
+import PricingCards from '../src/components/PricingCards';
 
 type PlanType = 'monthly' | 'yearly';
 
@@ -67,7 +69,7 @@ export default function PricingPlansScreen() {
         {/* Premium Title */}
         <View style={styles.premiumTitleContainer}>
           <Text style={styles.premiumTitle}>Axel Premium </Text>
-          <Ionicons name="diamond" size={18} color="#FFD700" />
+          <Ionicons name="star" size={18} color="#00A3FF" />
         </View>
 
         {/* Description */}
@@ -124,128 +126,30 @@ export default function PricingPlansScreen() {
                 start={{ x: 0, y: 0 }}
                 end={{ x: 0, y: 1 }}
               >
-                <MaterialCommunityIcons
-                  name={isRecording ? 'waveform' : 'sparkles'}
+                {/* <MaterialCommunityIcons
+                  name={'waveform'}
                   size={42}
                   color="white"
-                />
+                /> */}
               </LinearGradient>
             </LinearGradient>
           </TouchableOpacity>
         </View>
 
         {/* Plan Toggle */}
-        <View style={styles.planToggleContainer}>
-          <TouchableOpacity
-            style={[
-              styles.toggleButton,
-              selectedPlan === 'monthly' && styles.toggleButtonActive,
-            ]}
-            onPress={() => setSelectedPlan('monthly')}
-            activeOpacity={0.8}
-          >
-            {selectedPlan === 'monthly' ? (
-              <LinearGradient
-                colors={['#01A0FE', '#0385FE']}
-                style={styles.toggleButtonGradient}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 0, y: 1 }}
-              >
-                <Text style={styles.toggleTextActive}>Monthly</Text>
-              </LinearGradient>
-            ) : (
-              <Text style={styles.toggleTextInactive}>Monthly</Text>
-            )}
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[
-              styles.toggleButton,
-              selectedPlan === 'yearly' && styles.toggleButtonActive,
-            ]}
-            onPress={() => setSelectedPlan('yearly')}
-            activeOpacity={0.8}
-          >
-            {selectedPlan === 'yearly' ? (
-              <LinearGradient
-                colors={['#01A0FE', '#0385FE']}
-                style={styles.toggleButtonGradient}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 0, y: 1 }}
-              >
-                <Text style={styles.toggleTextActive}>Yearly</Text>
-              </LinearGradient>
-            ) : (
-              <Text style={styles.toggleTextInactive}>Yearly</Text>
-            )}
-          </TouchableOpacity>
-        </View>
+        <PlanToggle
+          selectedPlan={selectedPlan}
+          onPlanChange={setSelectedPlan}
+        />
 
         {/* Plan Info */}
         <Text style={styles.planInfo}>Paid Monthly, Cancel Anytime.</Text>
 
         {/* Pricing Cards */}
-        <View style={styles.pricingCardsContainer}>
-          {/* Monthly Card */}
-          <View
-            style={[
-              styles.pricingCard,
-              selectedPlan !== 'monthly' && styles.pricingCardInactive,
-            ]}
-          >
-            <Text style={styles.cardTitle}>Monthly Subscription</Text>
-            <View style={styles.priceContainer}>
-              <Text style={styles.priceCurrency}>$</Text>
-              <Text style={styles.priceAmount}>9.99</Text>
-              <Text style={styles.pricePeriod}>/month</Text>
-            </View>
-
-            <View style={styles.featuresList}>
-              <View style={styles.featureItem}>
-                <Ionicons name="checkmark-circle" size={24} color="#00A3FF" />
-                <Text style={styles.featureText}>Advanced AI model</Text>
-              </View>
-              <View style={styles.featureItem}>
-                <Ionicons name="checkmark-circle" size={24} color="#00A3FF" />
-                <Text style={styles.featureText}>Unlimited messages</Text>
-              </View>
-              <View style={styles.featureItem}>
-                <Ionicons name="checkmark-circle" size={24} color="#00A3FF" />
-                <Text style={styles.featureText}>Pro Image Generation</Text>
-              </View>
-            </View>
-          </View>
-
-          {/* Yearly Card */}
-          <View
-            style={[
-              styles.pricingCard,
-              selectedPlan !== 'yearly' && styles.pricingCardInactive,
-            ]}
-          >
-            <Text style={styles.cardTitle}>Yearly Subscription</Text>
-            <View style={styles.priceContainer}>
-              <Text style={styles.priceCurrency}>$</Text>
-              <Text style={styles.priceAmount}>99</Text>
-              <Text style={styles.pricePeriod}>/year</Text>
-            </View>
-
-            <View style={styles.featuresList}>
-              <View style={styles.featureItem}>
-                <Ionicons name="checkmark-circle" size={24} color="#00A3FF" />
-                <Text style={styles.featureText}>Advanced AI model</Text>
-              </View>
-              <View style={styles.featureItem}>
-                <Ionicons name="checkmark-circle" size={24} color="#00A3FF" />
-                <Text style={styles.featureText}>Unlimited messages</Text>
-              </View>
-              <View style={styles.featureItem}>
-                <Ionicons name="checkmark-circle" size={24} color="#00A3FF" />
-                <Text style={styles.featureText}>Pro Image Generation</Text>
-              </View>
-            </View>
-          </View>
-        </View>
+        <PricingCards
+          selectedPlan={selectedPlan}
+          onPlanChange={setSelectedPlan}
+        />
 
         {/* Bottom spacing */}
         <View style={styles.bottomSpacer} />
@@ -267,9 +171,6 @@ export default function PricingPlansScreen() {
             <Text style={styles.continueButtonText}>Continue</Text>
           </LinearGradient>
         </TouchableOpacity>
-
-        {/* Home Indicator */}
-        <View style={styles.homeIndicator} />
       </View>
     </View>
   );
@@ -307,12 +208,13 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingHorizontal: 16,
+    paddingTop: 30,
     alignItems: 'center',
   },
   premiumTitleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 14,
   },
   premiumTitle: {
     fontSize: 24,
@@ -327,13 +229,15 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
     lineHeight: 17,
     paddingHorizontal: 16,
+    marginBottom: 24,
   },
   logoContainer: {
     width: 80,
     height: 80,
     alignItems: 'center',
     justifyContent: 'center',
-    marginVertical: 32,
+    marginTop: 32,
+    marginBottom: 62,
     position: 'relative',
   },
   ring1: {
@@ -388,113 +292,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 100,
   },
-  planToggleContainer: {
-    flexDirection: 'row',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.5)',
-    borderRadius: 100,
-    padding: 0,
-    marginBottom: 8,
-  },
-  toggleButton: {
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderRadius: 100,
-    minWidth: 85,
-  },
-  toggleButtonActive: {
-    overflow: 'hidden',
-  },
-  toggleButtonGradient: {
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderRadius: 100,
-    borderWidth: 1,
-    borderColor: '#6DFFEE',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  toggleTextActive: {
-    fontSize: 14,
-    color: 'white',
-    letterSpacing: 0.5,
-  },
-  toggleTextInactive: {
-    fontSize: 14,
-    color: '#D4D4D4',
-    letterSpacing: 0.5,
-  },
   planInfo: {
     fontSize: 12,
     color: '#D4D4D4',
     letterSpacing: 0.5,
-    marginBottom: 24,
-  },
-  pricingCardsContainer: {
-    flexDirection: 'row',
-    gap: 16,
-    width: '100%',
-    marginBottom: 16,
-  },
-  pricingCard: {
-    flex: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.5)',
-    borderRadius: 20,
-    padding: 16,
-    minHeight: 194,
-  },
-  pricingCardInactive: {
-    opacity: 0.5,
-  },
-  cardTitle: {
-    fontSize: 14,
-    color: '#D4D4D4',
-    letterSpacing: 0.5,
-    marginBottom: 16,
-  },
-  priceContainer: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    marginBottom: 24,
-  },
-  priceCurrency: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: 'white',
-  },
-  priceAmount: {
-    fontSize: 24,
-    fontWeight: '500',
-    color: 'white',
-  },
-  pricePeriod: {
-    fontSize: 12,
-    color: '#D4D4D4',
-    marginLeft: 4,
-    marginBottom: 2,
-  },
-  featuresList: {
-    gap: 12,
-  },
-  featureItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  featureText: {
-    fontSize: 14,
-    color: '#D4D4D4',
-    letterSpacing: 0.5,
+    marginBottom: 30,
+    marginTop: 10,
   },
   bottomSpacer: {
     height: 20,
   },
   continueButtonContainer: {
     paddingHorizontal: 16,
-    paddingBottom: Platform.OS === 'ios' ? 0 : 8,
+    paddingBottom: 30,
+    paddingTop: 10,
   },
   continueButton: {
     height: 52,
