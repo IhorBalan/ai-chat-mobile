@@ -9,6 +9,7 @@ import {
   Platform,
   ScrollView,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
@@ -43,127 +44,129 @@ export default function LoginScreen() {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    >
-      <StatusBar style="light" />
-      <ScrollView
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
+    <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
+      <KeyboardAvoidingView
+        style={styles.keyboardAvoidingView}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        {/* Background gradient shapes */}
-        <View style={styles.backgroundShapesContainer}>
-          <View style={[styles.gradientCircle1, styles.blurEffect]} />
-          <View style={[styles.gradientCircle2, styles.blurEffect]} />
-        </View>
-
-        {/* Header */}
-        <View style={styles.headerContainer}>
-          <Text style={styles.headerTitle}>
-            Sign in to your{'\n'}Account
-          </Text>
-          <Text style={styles.headerSubtitle}>
-            Please enter your credentials to continue.
-          </Text>
-        </View>
-
-        {/* Form */}
-        <View style={styles.formContainer}>
-          {/* Email Input */}
-          <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>Email</Text>
-            <TextInput
-              style={styles.input}
-              value={email}
-              onChangeText={setEmail}
-              placeholder="Enter your email"
-              placeholderTextColor="rgba(255, 255, 255, 0.5)"
-              keyboardType="email-address"
-              autoCapitalize="none"
-            />
-            <View style={styles.inputUnderline} />
-          </View>
-
-          {/* Password Input */}
-          <View style={styles.inputContainer}>
-            <View style={styles.passwordHeader}>
-              <Text style={styles.inputLabel}>Password</Text>
-              <TouchableOpacity onPress={() => setPasswordVisible(!passwordVisible)}>
-                <Ionicons
-                  name={passwordVisible ? 'eye-off-outline' : 'eye-outline'}
-                  size={24}
-                  color="white"
-                />
-              </TouchableOpacity>
-            </View>
-            <TextInput
-              style={styles.input}
-              value={password}
-              onChangeText={setPassword}
-              placeholder="Enter your password"
-              placeholderTextColor="rgba(255, 255, 255, 0.5)"
-              secureTextEntry={!passwordVisible}
-            />
-            <View style={styles.inputUnderline} />
-          </View>
-        </View>
-
-        {/* Login Button */}
-        <TouchableOpacity
-          style={styles.loginButtonContainer}
-          onPress={handleLogin}
-          activeOpacity={0.8}
+        <StatusBar style="light" />
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
         >
-          <LinearGradient
-            colors={['#00A0FE', '#0385FE']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={styles.loginButton}
-          >
-            <Text style={styles.loginButtonText}>Login</Text>
-          </LinearGradient>
-        </TouchableOpacity>
+          {/* Background gradient shapes */}
+          <View style={styles.backgroundShapesContainer}>
+            <View style={[styles.gradientCircle1, styles.blurEffect]} />
+            <View style={[styles.gradientCircle2, styles.blurEffect]} />
+          </View>
 
-        {/* Divider */}
-        <View style={styles.dividerContainer}>
-          <View style={styles.dividerLine} />
-          <Text style={styles.dividerText}>Or login with</Text>
-          <View style={styles.dividerLine} />
-        </View>
-
-        {/* Social Login Buttons */}
-        <View style={styles.socialButtonsContainer}>
-          <TouchableOpacity
-            style={styles.socialButton}
-            onPress={handleAppleLogin}
-            activeOpacity={0.7}
-          >
-            <Ionicons name="logo-apple" size={28} color="white" />
-            <Text style={styles.socialButtonText}>Apple</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.socialButton}
-            onPress={handleGoogleLogin}
-            activeOpacity={0.7}
-          >
-            <Ionicons name="logo-google" size={28} color="white" />
-            <Text style={styles.socialButtonText}>Google</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Register Link */}
-        <View style={styles.registerContainer}>
-          <Text style={styles.registerText}>
-            Don't have account?{' '}
-            <Text style={styles.registerLink} onPress={handleRegister}>
-              Register
+          {/* Header */}
+          <View style={styles.headerContainer}>
+            <Text style={styles.headerTitle}>Sign in to your{'\n'}Account</Text>
+            <Text style={styles.headerSubtitle}>
+              Please enter your credentials to continue.
             </Text>
-          </Text>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+          </View>
+
+          {/* Form */}
+          <View style={styles.formContainer}>
+            {/* Email Input */}
+            <View style={styles.inputContainer}>
+              <Text style={styles.inputLabel}>Email</Text>
+              <TextInput
+                style={styles.input}
+                value={email}
+                onChangeText={setEmail}
+                placeholder="Enter your email"
+                placeholderTextColor="rgba(255, 255, 255, 0.5)"
+                keyboardType="email-address"
+                autoCapitalize="none"
+              />
+              <View style={styles.inputUnderline} />
+            </View>
+
+            {/* Password Input */}
+            <View style={styles.inputContainer}>
+              <View style={styles.passwordHeader}>
+                <Text style={styles.inputLabel}>Password</Text>
+                <TouchableOpacity
+                  onPress={() => setPasswordVisible(!passwordVisible)}
+                >
+                  <Ionicons
+                    name={passwordVisible ? 'eye-off-outline' : 'eye-outline'}
+                    size={24}
+                    color="white"
+                  />
+                </TouchableOpacity>
+              </View>
+              <TextInput
+                style={styles.input}
+                value={password}
+                onChangeText={setPassword}
+                placeholder="Enter your password"
+                placeholderTextColor="rgba(255, 255, 255, 0.5)"
+                secureTextEntry={!passwordVisible}
+              />
+              <View style={styles.inputUnderline} />
+            </View>
+          </View>
+
+          {/* Login Button */}
+          <TouchableOpacity
+            style={styles.loginButtonContainer}
+            onPress={handleLogin}
+            activeOpacity={0.8}
+          >
+            <LinearGradient
+              colors={['#00A0FE', '#0385FE']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.loginButton}
+            >
+              <Text style={styles.loginButtonText}>Login</Text>
+            </LinearGradient>
+          </TouchableOpacity>
+
+          {/* Divider */}
+          <View style={styles.dividerContainer}>
+            <View style={styles.dividerLine} />
+            <Text style={styles.dividerText}>Or login with</Text>
+            <View style={styles.dividerLine} />
+          </View>
+
+          {/* Social Login Buttons */}
+          <View style={styles.socialButtonsContainer}>
+            <TouchableOpacity
+              style={styles.socialButton}
+              onPress={handleAppleLogin}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="logo-apple" size={28} color="white" />
+              <Text style={styles.socialButtonText}>Apple</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.socialButton}
+              onPress={handleGoogleLogin}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="logo-google" size={28} color="white" />
+              <Text style={styles.socialButtonText}>Google</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Register Link */}
+          <View style={styles.registerContainer}>
+            <Text style={styles.registerText}>
+              Don't have account?{' '}
+              <Text style={styles.registerLink} onPress={handleRegister}>
+                Register
+              </Text>
+            </Text>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
@@ -171,6 +174,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#080F1A',
+  },
+  keyboardAvoidingView: {
+    flex: 1,
   },
   scrollContent: {
     flexGrow: 1,

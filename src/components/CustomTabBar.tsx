@@ -66,7 +66,7 @@ export default function CustomTabBar({
               case 'chat':
                 return isFocused ? 'chatbubble' : 'chatbubble-outline';
               case 'voice':
-                return 'waveform';
+                return 'mic';
               case 'profile':
                 return isFocused ? 'person' : 'person-outline';
               default:
@@ -104,9 +104,7 @@ export default function CustomTabBar({
               onPress={onPress}
               onLongPress={onLongPress}
               activeOpacity={0.8}
-              style={[
-                isFocused ? styles.tabButtonActive : styles.tabButton,
-              ]}
+              style={[isFocused ? styles.tabButtonActive : styles.tabButton]}
             >
               {isFocused ? (
                 <LinearGradient
@@ -116,7 +114,11 @@ export default function CustomTabBar({
                   end={{ x: 0, y: 1 }}
                 >
                   {isVoiceTab ? (
-                    <MaterialCommunityIcons name={iconName} size={24} color="white" />
+                    <MaterialCommunityIcons
+                      name={iconName}
+                      size={24}
+                      color="white"
+                    />
                   ) : (
                     <Ionicons name={iconName} size={24} color="white" />
                   )}
@@ -125,7 +127,11 @@ export default function CustomTabBar({
               ) : (
                 <View style={styles.inactiveTab}>
                   {isVoiceTab ? (
-                    <MaterialCommunityIcons name={iconName} size={24} color="white" />
+                    <MaterialCommunityIcons
+                      name={iconName}
+                      size={24}
+                      color="white"
+                    />
                   ) : (
                     <Ionicons name={iconName} size={24} color="white" />
                   )}
@@ -138,6 +144,16 @@ export default function CustomTabBar({
 
       {/* Home Indicator */}
       <View style={styles.homeIndicator} />
+
+      {/* Bottom Gradient Overlay */}
+      <View style={styles.bottomGradientOverlay}>
+        <LinearGradient
+          colors={['transparent', '#080F1A']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+          style={styles.gradientOverlay}
+        />
+      </View>
     </Animated.View>
   );
 }
@@ -155,7 +171,7 @@ const styles = StyleSheet.create({
   tabBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    backgroundColor: '#343942',
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.2)',
     borderRadius: 100,
@@ -196,7 +212,7 @@ const styles = StyleSheet.create({
     height: 52,
     backgroundColor: '#131821',
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.5)',
+    borderColor: 'rgba(255, 255, 255, 0.2)',
     borderRadius: 100,
     alignItems: 'center',
     justifyContent: 'center',
@@ -207,5 +223,17 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 100,
     marginBottom: Platform.OS === 'ios' ? 8 : 0,
+  },
+  bottomGradientOverlay: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 100,
+    pointerEvents: 'none',
+  },
+  gradientOverlay: {
+    flex: 1,
+    width: '100%',
   },
 });
