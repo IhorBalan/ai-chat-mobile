@@ -20,6 +20,7 @@ type PlanType = 'monthly' | 'yearly';
 export default function PricingPlansScreen() {
   const router = useRouter();
   const [selectedPlan, setSelectedPlan] = useState<PlanType>('monthly');
+  const [isRecording, setIsRecording] = useState(false);
 
   const handleBack = () => {
     router.back();
@@ -27,6 +28,11 @@ export default function PricingPlansScreen() {
 
   const handleMore = () => {
     console.log('More options pressed');
+  };
+
+  const handleRecording = () => {
+    setIsRecording(!isRecording);
+    console.log('Recording:', !isRecording);
   };
 
   const handleContinue = () => {
@@ -99,6 +105,7 @@ export default function PricingPlansScreen() {
           {/* Main Logo Button */}
           <TouchableOpacity
             style={styles.voiceButtonWrapper}
+            onPress={handleRecording}
             activeOpacity={0.8}
           >
             <LinearGradient
@@ -117,7 +124,11 @@ export default function PricingPlansScreen() {
                 start={{ x: 0, y: 0 }}
                 end={{ x: 0, y: 1 }}
               >
-                <Ionicons name="sparkles" size={42} color="white" />
+                <MaterialCommunityIcons
+                  name={isRecording ? 'waveform' : 'sparkles'}
+                  size={42}
+                  color="white"
+                />
               </LinearGradient>
             </LinearGradient>
           </TouchableOpacity>
