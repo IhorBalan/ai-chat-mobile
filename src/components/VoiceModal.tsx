@@ -1,14 +1,8 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  Modal,
-  Pressable,
-} from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as Speech from 'expo-speech';
+import BottomModal from './BottomModal';
 
 export interface VoiceOption {
   id: string;
@@ -74,109 +68,58 @@ export default function VoiceModal({
   };
 
   return (
-    <Modal
-      transparent
-      visible={visible}
-      animationType="slide"
-      onRequestClose={onClose}
-    >
-      <Pressable style={styles.overlay} onPress={onClose}>
-        <Pressable
-          style={styles.container}
-          onPress={(e) => e.stopPropagation()}
-        >
-          <View style={styles.header}>
-            <Text style={styles.title}>Select Voice</Text>
-            <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-              <Ionicons name="close" size={28} color="#fff" />
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.content}>
-            {availableVoices.map((voice) => {
-              const isSelected = selectedVoice.id === voice.id;
-              return (
-                <TouchableOpacity
-                  key={voice.id}
+    <BottomModal visible={visible} title="Select Voice" onClose={onClose}>
+      <View style={styles.content}>
+        {availableVoices.map((voice) => {
+          const isSelected = selectedVoice.id === voice.id;
+          return (
+            <TouchableOpacity
+              key={voice.id}
+              style={[styles.voiceOption, isSelected && styles.selectedOption]}
+              onPress={() => {
+                onSelectVoice(voice);
+              }}
+              activeOpacity={0.7}
+            >
+              <View style={styles.voiceOptionLeft}>
+                <View
                   style={[
-                    styles.voiceOption,
-                    isSelected && styles.selectedOption,
+                    styles.iconContainer,
+                    isSelected && styles.iconContainerSelected,
                   ]}
-                  onPress={() => {
-                    onSelectVoice(voice);
-                  }}
-                  activeOpacity={0.7}
                 >
-                  <View style={styles.voiceOptionLeft}>
-                    <View
-                      style={[
-                        styles.iconContainer,
-                        isSelected && styles.iconContainerSelected,
-                      ]}
-                    >
-                      <Ionicons
-                        name={voice.icon as keyof typeof Ionicons.glyphMap}
-                        size={24}
-                        color={isSelected ? '#00A3FF' : 'white'}
-                      />
-                    </View>
-                    <View style={styles.voiceInfo}>
-                      <Text style={styles.voiceName}>{voice.name}</Text>
-                      <Text style={styles.voiceDescription}>
-                        {voice.description}
-                      </Text>
-                    </View>
-                  </View>
-                  <TouchableOpacity
-                    style={styles.previewButton}
-                    onPress={(e) => handlePreview(voice, e)}
-                    activeOpacity={0.7}
-                  >
-                    <Ionicons name="play-circle" size={32} color="#00A3FF" />
-                  </TouchableOpacity>
-                </TouchableOpacity>
-              );
-            })}
-          </View>
-        </Pressable>
-      </Pressable>
-    </Modal>
+                  <Ionicons
+                    name={voice.icon as keyof typeof Ionicons.glyphMap}
+                    size={24}
+                    color={isSelected ? '#00A3FF' : 'white'}
+                  />
+                </View>
+                <View style={styles.voiceInfo}>
+                  <Text style={styles.voiceName}>{voice.name}</Text>
+                  <Text style={styles.voiceDescription}>
+                    {voice.description}
+                  </Text>
+                </View>
+              </View>
+              <TouchableOpacity
+                style={styles.previewButton}
+                onPress={(e) => handlePreview(voice, e)}
+                activeOpacity={0.7}
+              >
+                <Ionicons name="play-circle" size={32} color="#00A3FF" />
+              </TouchableOpacity>
+            </TouchableOpacity>
+          );
+        })}
+      </View>
+    </BottomModal>
   );
 }
 
 const styles = StyleSheet.create({
-  overlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'flex-end',
-  },
-  container: {
-    backgroundColor: '#212731',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    paddingBottom: 40,
-    maxHeight: '80%',
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: 'white',
-  },
-  closeButton: {
-    padding: 4,
-  },
   content: {
-    paddingHorizontal: 20,
     paddingTop: 16,
+    paddingHorizontal: 20,
   },
   voiceOption: {
     flexDirection: 'row',

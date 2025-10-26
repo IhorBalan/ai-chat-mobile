@@ -29,7 +29,11 @@ export default function HomeScreen() {
   };
 
   const handleFeature = (feature: string) => {
-    console.log(`${feature} pressed`);
+    if (feature === 'Smart Translation') {
+      router.push('/translation');
+    } else {
+      console.log(`${feature} pressed`);
+    }
   };
 
   const handleConversation = (id: number) => {
