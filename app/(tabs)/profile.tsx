@@ -55,7 +55,7 @@ export default function ProfileScreen() {
   };
 
   const handleSendFeedback = () => {
-    console.log('Send Feedback pressed');
+    router.push('/feedback');
   };
 
   const handleLogout = () => {

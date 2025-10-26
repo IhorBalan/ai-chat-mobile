@@ -79,8 +79,8 @@ export default function Header({
       {/* Central Slot */}
       {centralSlot && <View style={styles.centralSlot}>{centralSlot}</View>}
 
-      {/* More Button */}
-      {showMore && (
+      {/* More Button or Spacer */}
+      {showMore ? (
         <TouchableOpacity
           style={styles.headerButton}
           onPress={onMore}
@@ -92,10 +92,9 @@ export default function Header({
             color="white"
           />
         </TouchableOpacity>
+      ) : (
+        <View style={styles.headerSpacer} />
       )}
-
-      {/* Spacer when more button is hidden */}
-      {!showMore && <View style={styles.headerButton} />}
     </Animated.View>
   );
 }
@@ -118,6 +117,10 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  headerSpacer: {
+    width: 40,
+    height: 40,
   },
   centralSlot: {
     flex: 1,

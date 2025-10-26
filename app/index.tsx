@@ -8,20 +8,20 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  Dimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import CustomTextInput from '../src/components/CustomTextInput';
-import PasswordInput from '../src/components/PasswordInput';
+import Input from '../src/components/Input';
 import Button from '../src/components/Button';
+import DecorationSvg from '../src/components/DecorationSvg';
 
 export default function LoginScreen() {
   const router = useRouter();
   const [email, setEmail] = useState('abhixyzxyz@gmail.com');
   const [password, setPassword] = useState('password123');
+  const [passwordVisible, setPasswordVisible] = useState(false);
 
   const handleLogin = () => {
     // Navigate to home screen (tabs)
@@ -47,10 +47,12 @@ export default function LoginScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Background gradient shapes - outside SafeAreaView */}
-      <View style={styles.backgroundShapesContainer}>
-        <View style={[styles.gradientCircle1, styles.blurEffect]} />
-        <View style={[styles.gradientCircle2, styles.blurEffect]} />
+      {/* Decoration SVG */}
+      <View style={styles.decorationContainer}>
+        <DecorationSvg width={380} height={251} />
+      </View>
+      <View style={styles.decorationContainer2}>
+        <DecorationSvg width={380} height={251} />
       </View>
 
       <SafeAreaView
@@ -79,7 +81,7 @@ export default function LoginScreen() {
             {/* Form */}
             <View style={styles.formContainer}>
               {/* Email Input */}
-              <CustomTextInput
+              <Input
                 label="Email"
                 value={email}
                 onChangeText={setEmail}
@@ -89,11 +91,17 @@ export default function LoginScreen() {
               />
 
               {/* Password Input */}
-              <PasswordInput
+              <Input
                 label="Password"
                 value={password}
                 onChangeText={setPassword}
                 placeholder="Enter your password"
+                secureTextEntry
+                showPasswordToggle
+                passwordVisible={passwordVisible}
+                onTogglePasswordVisibility={() =>
+                  setPasswordVisible(!passwordVisible)
+                }
               />
             </View>
 
@@ -164,37 +172,21 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingHorizontal: 20,
   },
-  backgroundShapesContainer: {
+  decorationContainer: {
     position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    overflow: 'hidden',
+    bottom: -60,
+    right: -90,
+    zIndex: 0,
+    opacity: 0.7,
+    pointerEvents: 'none',
   },
-  gradientCircle1: {
+  decorationContainer2: {
     position: 'absolute',
-    width: 1000,
-    height: 1000,
-    borderRadius: 1000,
-    backgroundColor: 'rgba(51, 181, 255, 0.1)',
-    left: (Dimensions.get('window').width - 1000) / 2,
-    top: -820,
-  },
-  gradientCircle2: {
-    position: 'absolute',
-    width: 1000,
-    height: 1000,
-    borderRadius: 1000,
-    backgroundColor: 'rgba(0, 163, 255, 0.2)',
-    left: (Dimensions.get('window').width - 1000) / 2,
-    top: -750,
-  },
-  blurEffect: {
-    shadowColor: '#00A0FE',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.5,
-    shadowRadius: 100,
+    top: -65,
+    left: -65,
+    zIndex: 0,
+    opacity: 0.7,
+    pointerEvents: 'none',
   },
   headerContainer: {
     alignItems: 'center',
