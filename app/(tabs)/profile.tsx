@@ -47,11 +47,11 @@ export default function ProfileScreen() {
   };
 
   const handleHelpCenter = () => {
-    console.log('Help Center pressed');
+    router.push('/help');
   };
 
   const handlePrivacyPolicy = () => {
-    console.log('Privacy Policy pressed');
+    router.push('/privacy');
   };
 
   const handleSendFeedback = () => {

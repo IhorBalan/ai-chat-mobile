@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
     paddingTop: 20,
     paddingBottom: 100,
   },
@@ -171,11 +171,11 @@ const styles = StyleSheet.create({
     color: 'rgba(255, 255, 255, 0.7)',
     lineHeight: 22,
     textAlign: 'center',
-    paddingHorizontal: 8,
+    paddingHorizontal: 0,
     marginBottom: 8,
   },
   buttonContainer: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
     paddingBottom: 30,
     paddingTop: 10,
   },

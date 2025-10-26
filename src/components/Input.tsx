@@ -49,7 +49,11 @@ export default function Input({
       {label && <Text style={styles.label}>{label}</Text>}
       <View style={[styles.inputWrapper, multiline && styles.textAreaWrapper]}>
         <TextInput
-          style={[styles.input, multiline && styles.textArea, showPasswordToggle && styles.inputWithIcon]}
+          style={[
+            styles.input,
+            multiline && styles.textArea,
+            showPasswordToggle && styles.inputWithIcon,
+          ]}
           placeholder={placeholder}
           placeholderTextColor="rgba(255, 255, 255, 0.4)"
           value={value}

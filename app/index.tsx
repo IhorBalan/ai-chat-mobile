@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
   },
   decorationContainer: {
     position: 'absolute',
