@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  Alert,
+  Animated,
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useRouter } from 'expo-router';
@@ -17,6 +19,67 @@ import Input from '../src/components/Input';
 import LanguageSelector from '../src/components/LanguageSelector';
 import LanguageModal from '../src/components/LanguageModal';
 import type { Language } from '../src/components/LanguageModal';
+import { generateAIResponse, AIServiceError } from '../src/services/AIService';
+
+// Animated Dots Component
+function LoadingDots() {
+  const dot1 = useRef(new Animated.Value(0.3)).current;
+  const dot2 = useRef(new Animated.Value(0.3)).current;
+  const dot3 = useRef(new Animated.Value(0.3)).current;
+
+  useEffect(() => {
+    const animateDots = () => {
+      Animated.sequence([
+        Animated.parallel([
+          Animated.timing(dot1, {
+            toValue: 1,
+            duration: 400,
+            useNativeDriver: true,
+          }),
+        ]),
+        Animated.parallel([
+          Animated.timing(dot1, {
+            toValue: 0.3,
+            duration: 400,
+            useNativeDriver: true,
+          }),
+          Animated.timing(dot2, {
+            toValue: 1,
+            duration: 400,
+            useNativeDriver: true,
+          }),
+        ]),
+        Animated.parallel([
+          Animated.timing(dot2, {
+            toValue: 0.3,
+            duration: 400,
+            useNativeDriver: true,
+          }),
+          Animated.timing(dot3, {
+            toValue: 1,
+            duration: 400,
+            useNativeDriver: true,
+          }),
+        ]),
+        Animated.timing(dot3, {
+          toValue: 0.3,
+          duration: 400,
+          useNativeDriver: true,
+        }),
+      ]).start(() => animateDots());
+    };
+
+    animateDots();
+  }, []);
+
+  return (
+    <View style={styles.loadingDotsContainer}>
+      <Animated.View style={[styles.loadingDot, { opacity: dot1 }]} />
+      <Animated.View style={[styles.loadingDot, { opacity: dot2 }]} />
+      <Animated.View style={[styles.loadingDot, { opacity: dot3 }]} />
+    </View>
+  );
+}
 
 const languages: Language[] = [
   { id: 'en', name: 'English', flag: '🇺🇸' },
@@ -37,6 +100,8 @@ export default function TranslationScreen() {
   const [toLanguage, setToLanguage] = useState<Language>(languages[1]);
   const [inputText, setInputText] = useState('');
   const [translatedText, setTranslatedText] = useState('');
+  const [translationExplanation, setTranslationExplanation] = useState('');
+  const [isTranslating, setIsTranslating] = useState(false);
   const [showFromPicker, setShowFromPicker] = useState(false);
   const [showToPicker, setShowToPicker] = useState(false);
 
@@ -68,12 +133,54 @@ export default function TranslationScreen() {
     setShowFromPicker(false); // Close the other picker
   };
 
-  const handleTranslate = () => {
-    // Mock translation
-    if (inputText.trim()) {
-      setTranslatedText(
-        `Translated from ${fromLanguage.name} to ${toLanguage.name}: ${inputText}`
+  const handleTranslate = async () => {
+    if (!inputText.trim()) {
+      return;
+    }
+
+    setIsTranslating(true);
+    setTranslatedText('');
+    setTranslationExplanation('');
+
+    try {
+      const systemPrompt = `You are a professional translator and linguist. Your task is to translate text from ${fromLanguage.name} to ${toLanguage.name}. 
+
+IMPORTANT: Provide your response in the following EXACT format:
+TRANSLATION: [the translated text]
+EXPLANATION: [a brief explanation of any cultural nuances, idioms, or interesting aspects of the translation]`;
+
+      const aiResponse = await generateAIResponse(
+        `Translate this ${fromLanguage.name} text to ${toLanguage.name}: "${inputText.trim()}"`,
+        systemPrompt
       );
+
+      // Parse the response to separate translation and explanation
+      const translationMatch = aiResponse.match(
+        /TRANSLATION:\s*(.+?)(?=EXPLANATION:|$)/s
+      );
+      const explanationMatch = aiResponse.match(/EXPLANATION:\s*(.+?)$/s);
+
+      const translation =
+        translationMatch?.[1]?.trim() ||
+        aiResponse.split('TRANSLATION:')[1]?.split('EXPLANATION:')[0]?.trim() ||
+        aiResponse;
+      const explanation = explanationMatch?.[1]?.trim() || '';
+
+      setTranslatedText(translation);
+      setTranslationExplanation(explanation);
+    } catch (error) {
+      console.error('Translation error:', error);
+
+      // Fallback translation message
+      const errorMessage =
+        error instanceof AIServiceError
+          ? `Translation failed: ${error.message}`
+          : 'Failed to translate. Please try again.';
+
+      Alert.alert('Translation Error', errorMessage);
+      setTranslatedText(errorMessage);
+    } finally {
+      setIsTranslating(false);
     }
   };
 
@@ -161,15 +268,29 @@ export default function TranslationScreen() {
             numberOfLines={8}
           />
 
-          {/* Output Area */}
-          {translatedText && (
-            <View style={styles.outputContainer}>
-              <Text style={styles.sectionTitle}>{toLanguage.name}</Text>
-              <View style={styles.textOutputWrapper}>
-                <Text style={styles.outputText}>{translatedText}</Text>
-              </View>
-            </View>
-          )}
+          {/* Output Area - Translation */}
+          <View>
+            <Text style={styles.outputSectionTitle}>
+              Translation ({toLanguage.name})
+            </Text>
+            {isTranslating ? (
+              <LoadingDots />
+            ) : translatedText ? (
+              <Text style={styles.outputSectionText}>{translatedText}</Text>
+            ) : null}
+          </View>
+
+          {/* Output Area - Explanation */}
+          <View>
+            <Text style={styles.outputSectionTitle}>Explanation</Text>
+            {isTranslating ? (
+              <LoadingDots />
+            ) : translationExplanation ? (
+              <Text style={styles.outputSectionText}>
+                {translationExplanation}
+              </Text>
+            ) : null}
+          </View>
 
           {/* Bottom spacing */}
           <View style={styles.bottomSpacer} />
@@ -178,9 +299,10 @@ export default function TranslationScreen() {
         {/* Fixed Translate Button */}
         <View style={styles.buttonContainer}>
           <Button
-            title="Translate"
+            title={isTranslating ? 'Translating...' : 'Translate'}
             onPress={handleTranslate}
             variant="secondary"
+            disabled={isTranslating || !inputText.trim()}
           />
         </View>
 
@@ -270,26 +392,29 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  outputContainer: {
-    marginBottom: 16,
+  loadingDotsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    minHeight: 24,
   },
-  sectionTitle: {
-    fontSize: 13,
+  loadingDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#00A3FF',
+  },
+  outputSectionTitle: {
+    fontSize: 18,
     fontWeight: '600',
-    color: 'rgba(255, 255, 255, 0.6)',
-    marginBottom: 8,
+    color: '#00A3FF',
+    marginTop: 30,
+    marginBottom: 12,
+    letterSpacing: 0.3,
   },
-  textOutputWrapper: {
-    backgroundColor: 'rgba(0, 163, 255, 0.1)',
-    borderWidth: 1,
-    borderColor: '#00A3FF',
-    borderRadius: 12,
-    minHeight: 160,
-    padding: 12,
-  },
-  outputText: {
-    fontSize: 16,
-    color: 'white',
+  outputSectionText: {
+    fontSize: 15,
+    color: 'rgba(255, 255, 255, 0.8)',
     lineHeight: 24,
   },
   bottomSpacer: {
