@@ -1,4 +1,9 @@
 import { useState, useCallback } from 'react';
+import {
+  getAICompletion,
+  type OpenAIMessage,
+  AIServiceError,
+} from './AIService';
 
 export interface Message {
   id: number;
@@ -14,7 +19,7 @@ interface ChatService {
   isLoading: boolean;
 }
 
-// Mock AI responses
+// Mock AI responses as fallback
 const getMockAIResponse = (userMessage: string): string => {
   const responses = [
     "That's an interesting question! Let me think about that for a moment.",
@@ -54,94 +59,90 @@ const getMockAIResponse = (userMessage: string): string => {
   return responses[Math.floor(Math.random() * responses.length)];
 };
 
-// Mock initial messages
-const MOCK_MESSAGES: Message[] = [
-  {
-    id: 1,
-    type: 'ai',
-    content: "Hello! I'm your AI assistant. How can I help you today?",
-    timestamp: new Date(Date.now() - 3600000).toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-    }),
-  },
-  {
-    id: 2,
-    type: 'user',
-    content: 'Hi! Can you help me with some questions about UI/UX design?',
-    timestamp: new Date(Date.now() - 3300000).toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-    }),
-  },
-  {
-    id: 3,
-    type: 'ai',
-    content:
-      "Absolutely! I'd be happy to help you with UI/UX design questions. What would you like to know?",
-    timestamp: new Date(Date.now() - 3000000).toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-    }),
-  },
-  {
-    id: 4,
-    type: 'user',
-    content: 'What are the key principles of good UI design?',
-    timestamp: new Date(Date.now() - 2700000).toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-    }),
-  },
-  {
-    id: 5,
-    type: 'ai',
-    content:
-      "Great question! Here are the key principles of good UI design:\n\n1. **Clarity** - The interface should be easy to understand at a glance\n2. **Consistency** - Elements should behave and look similar throughout\n3. **Feedback** - Users should know what's happening through visual cues\n4. **Simplicity** - Avoid unnecessary complexity\n5. **Accessibility** - Design should be usable by everyone",
-    timestamp: new Date(Date.now() - 2400000).toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-    }),
-  },
-];
-
 export function useChatService(): ChatService {
-  const [messages, setMessages] = useState<Message[]>(MOCK_MESSAGES);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const sendMessage = useCallback((content: string) => {
-    if (!content.trim()) return;
+  const sendMessage = useCallback(
+    async (content: string) => {
+      if (!content.trim()) return;
 
-    const userMessage: Message = {
-      id: Date.now(),
-      type: 'user',
-      content: content.trim(),
-      timestamp: new Date().toLocaleTimeString('en-US', {
-        hour: '2-digit',
-        minute: '2-digit',
-      }),
-    };
-
-    // Add user message immediately
-    setMessages((prev) => [...prev, userMessage]);
-
-    // Simulate AI response after a delay
-    setIsLoading(true);
-    setTimeout(() => {
-      const aiResponse: Message = {
-        id: Date.now() + 1,
-        type: 'ai',
-        content: getMockAIResponse(content),
+      const userMessage: Message = {
+        id: Date.now(),
+        type: 'user',
+        content: content.trim(),
         timestamp: new Date().toLocaleTimeString('en-US', {
           hour: '2-digit',
           minute: '2-digit',
         }),
       };
 
-      setMessages((prev) => [...prev, aiResponse]);
-      setIsLoading(false);
-    }, 1500); // 1.5 second delay to simulate AI processing
-  }, []);
+      // Add user message immediately
+      setMessages((prev) => [...prev, userMessage]);
+
+      setIsLoading(true);
+
+      try {
+        // Build conversation history from existing messages
+        const conversationHistory: OpenAIMessage[] = [];
+
+        // Add recent messages to context (last 10 messages for context)
+        const recentMessages = messages.slice(-10);
+        for (const msg of recentMessages) {
+          conversationHistory.push({
+            role: msg.type === 'user' ? 'user' : 'assistant',
+            content: msg.content,
+          });
+        }
+
+        // Add the current user message
+        conversationHistory.push({
+          role: 'user',
+          content: content.trim(),
+        });
+
+        // Get AI response from OpenAI
+        const aiContent = await getAICompletion(conversationHistory, {
+          model: 'gpt-4o',
+          temperature: 0.7,
+          maxTokens: 1000,
+        });
+
+        const aiResponse: Message = {
+          id: Date.now() + 1,
+          type: 'ai',
+          content: aiContent,
+          timestamp: new Date().toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+          }),
+        };
+
+        setMessages((prev) => [...prev, aiResponse]);
+      } catch (error) {
+        console.error('AI service error:', error);
+
+        // Fallback to mock response if AI service fails
+        const fallbackResponse: Message = {
+          id: Date.now() + 1,
+          type: 'ai',
+          content:
+            error instanceof AIServiceError
+              ? `Sorry, I encountered an error: ${error.message}`
+              : getMockAIResponse(content),
+          timestamp: new Date().toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+          }),
+        };
+
+        setMessages((prev) => [...prev, fallbackResponse]);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [messages]
+  );
 
   const clearMessages = useCallback(() => {
     setMessages([]);
