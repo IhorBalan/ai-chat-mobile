@@ -269,28 +269,32 @@ EXPLANATION: [a brief explanation of any cultural nuances, idioms, or interestin
           />
 
           {/* Output Area - Translation */}
-          <View>
-            <Text style={styles.outputSectionTitle}>
-              Translation ({toLanguage.name})
-            </Text>
-            {isTranslating ? (
-              <LoadingDots />
-            ) : translatedText ? (
-              <Text style={styles.outputSectionText}>{translatedText}</Text>
-            ) : null}
-          </View>
+          {(isTranslating || translatedText) && (
+            <View>
+              <Text style={styles.outputSectionTitle}>
+                Translation ({toLanguage.name})
+              </Text>
+              {isTranslating ? (
+                <LoadingDots />
+              ) : (
+                <Text style={styles.outputSectionText}>{translatedText}</Text>
+              )}
+            </View>
+          )}
 
           {/* Output Area - Explanation */}
-          <View>
-            <Text style={styles.outputSectionTitle}>Explanation</Text>
-            {isTranslating ? (
-              <LoadingDots />
-            ) : translationExplanation ? (
-              <Text style={styles.outputSectionText}>
-                {translationExplanation}
-              </Text>
-            ) : null}
-          </View>
+          {(isTranslating || translationExplanation) && (
+            <View>
+              <Text style={styles.outputSectionTitle}>Explanation</Text>
+              {isTranslating ? (
+                <LoadingDots />
+              ) : (
+                <Text style={styles.outputSectionText}>
+                  {translationExplanation}
+                </Text>
+              )}
+            </View>
+          )}
 
           {/* Bottom spacing */}
           <View style={styles.bottomSpacer} />
