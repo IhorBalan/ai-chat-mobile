@@ -7,6 +7,8 @@ import {
   StyleSheet,
   ScrollView,
   Platform,
+  KeyboardAvoidingView,
+  Keyboard,
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
@@ -17,24 +19,27 @@ import Header from '../../src/components/Header';
 import BottomInputBar from '../../src/components/BottomInputBar';
 import DecorationSvg from '../../src/components/DecorationSvg';
 import ChatMessage from '../../src/components/ChatMessage';
-
-interface Message {
-  id: number;
-  type: 'ai' | 'user';
-  content: string;
-  timestamp?: string;
-}
+import { useChatService } from '../../src/services/ChatService';
 
 export default function ChatBotScreen() {
   const router = useRouter();
   const [message, setMessage] = useState('');
   const [selectedModel, setSelectedModel] = useState('Axel 2.5 Pro');
-  const [alarmTime, setAlarmTime] = useState('09:00 AM');
   const scrollViewRef = useRef<ScrollView>(null);
 
-  // Scroll to bottom when screen opens
+  // Use the chat service
+  const {
+    messages,
+    sendMessage: chatSendMessage,
+    isLoading,
+  } = useChatService();
+
+  // Scroll to bottom when screen opens and dismiss keyboard
   useFocusEffect(
     React.useCallback(() => {
+      // Dismiss keyboard when screen gains focus
+      Keyboard.dismiss();
+
       // Small delay to ensure content is rendered
       const timer = setTimeout(() => {
         scrollViewRef.current?.scrollToEnd({ animated: true });
@@ -44,14 +49,14 @@ export default function ChatBotScreen() {
     }, [])
   );
 
-  const messages: Message[] = [
-    {
-      id: 1,
-      type: 'ai',
-      content:
-        'Learning User Interface (UI) and User Experience (UX) design is a journey into creating digital products that are not only visually appealing but also intuitive and enjoyable to use.',
-    },
-  ];
+  // Scroll to bottom when new messages are added
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      scrollViewRef.current?.scrollToEnd({ animated: true });
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, [messages]);
 
   const handleBack = () => {
     router.back();
@@ -66,9 +71,13 @@ export default function ChatBotScreen() {
   };
 
   const handleSend = () => {
-    if (message.trim()) {
-      console.log('Sending message:', message);
+    if (message.trim() && !isLoading) {
+      chatSendMessage(message);
       setMessage('');
+      // Scroll to bottom after sending
+      setTimeout(() => {
+        scrollViewRef.current?.scrollToEnd({ animated: true });
+      }, 100);
     }
   };
 
@@ -113,7 +122,11 @@ export default function ChatBotScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      keyboardVerticalOffset={0}
+    >
       <StatusBar style="light" />
 
       {/* Decoration SVG */}
@@ -148,78 +161,31 @@ export default function ChatBotScreen() {
         style={styles.chatContainer}
         contentContainerStyle={styles.chatContent}
         showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
       >
-        {/* AI Message with UI/UX Content */}
-        <ChatMessage
-          message={{
-            id: 1,
-            type: 'ai',
-            content: `UI/UX design creates digital products that are both visually appealing and intuitive.
-
-1. UX Design - The overall user experience
-2. UI Design - The visual and interactive elements`,
-            timestamp: '2:30 PM',
-          }}
-          onCopy={handleCopy}
-          onRegenerate={handleRegenerate}
-          onLike={handleLike}
-          onDislike={handleDislike}
-        />
-
-        {/* Date Divider */}
-        <View style={styles.dateDivider}>
-          <LinearGradient
-            colors={['transparent', 'rgba(255, 255, 255, 0.2)']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={styles.dividerLine}
+        {/* Render messages from service */}
+        {messages.map((msg) => (
+          <ChatMessage
+            key={msg.id}
+            message={{
+              id: msg.id,
+              type: msg.type,
+              content: msg.content,
+              timestamp: msg.timestamp,
+            }}
+            onCopy={handleCopy}
+            onRegenerate={handleRegenerate}
+            onLike={handleLike}
+            onDislike={handleDislike}
           />
-          <LinearGradient
-            colors={['rgba(255, 255, 255, 0.25)', 'rgba(255, 255, 255, 0.15)']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.dateLabelGradient}
-          >
-            <View style={styles.dateLabel}>
-              <Text style={styles.dateLabelText}>Today</Text>
-            </View>
-          </LinearGradient>
-          <LinearGradient
-            colors={['rgba(255, 255, 255, 0.2)', 'transparent']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={styles.dividerLine}
-          />
-        </View>
+        ))}
 
-        {/* Audio Waveform Message */}
-        <ChatMessage
-          message={{
-            id: 2,
-            type: 'user',
-            content: '🎵 Audio message',
-            timestamp: '2:32 PM',
-          }}
-        />
-
-        {/* AI Response */}
-        <ChatMessage
-          message={{
-            id: 3,
-            type: 'ai',
-            content: `Great question! Always put the user first and think about how they'll interact with your design.
-
-Key tips:
-- Start with user research
-- Create wireframes first
-- Test with real users`,
-            timestamp: '2:33 PM',
-          }}
-          onCopy={handleCopy}
-          onRegenerate={handleRegenerate}
-          onLike={handleLike}
-          onDislike={handleDislike}
-        />
+        {/* Show loading indicator when AI is responding */}
+        {isLoading && (
+          <View style={styles.loadingContainer}>
+            <Text style={styles.loadingText}>AI is typing...</Text>
+          </View>
+        )}
 
         {/* Bottom spacing */}
         <View style={styles.bottomSpacer} />
@@ -234,7 +200,7 @@ Key tips:
         onImage={handleImage}
         onAttachment={handleAttachment}
       />
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -316,5 +282,14 @@ const styles = StyleSheet.create({
   },
   bottomSpacer: {
     height: 20,
+  },
+  loadingContainer: {
+    paddingVertical: 16,
+    alignItems: 'center',
+  },
+  loadingText: {
+    color: 'rgba(255, 255, 255, 0.5)',
+    fontSize: 14,
+    fontStyle: 'italic',
   },
 });

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import {
   View,
   TextInput,
@@ -25,6 +25,7 @@ export default function BottomInputBar({
   onImage,
   onAttachment,
 }: BottomInputBarProps) {
+  const textInputRef = useRef<TextInput>(null);
   return (
     <View style={styles.inputBarContainer}>
       <View style={styles.inputBar}>
@@ -47,11 +48,15 @@ export default function BottomInputBar({
         {/* Text Input */}
         <View style={styles.inputWrapper}>
           <TextInput
+            ref={textInputRef}
             style={styles.textInput}
             placeholder="Type something.."
             placeholderTextColor="rgba(255, 255, 255, 0.5)"
             value={message}
             onChangeText={setMessage}
+            autoFocus={false}
+            blurOnSubmit={true}
+            returnKeyType="send"
           />
           <TouchableOpacity style={styles.sendButton} onPress={onSend}>
             <Ionicons name="send" size={16} color="white" />
