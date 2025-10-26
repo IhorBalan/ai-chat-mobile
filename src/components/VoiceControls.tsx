@@ -215,6 +215,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     alignItems: 'center',
     justifyContent: 'center',
+    opacity: 0,
   },
   voiceButtonContainer: {
     alignItems: 'center',
