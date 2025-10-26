@@ -31,6 +31,8 @@ export default function HomeScreen() {
   const handleFeature = (feature: string) => {
     if (feature === 'Smart Translation') {
       router.push('/translation');
+    } else if (feature === 'Image Generation') {
+      router.push('/image-generation');
     } else {
       console.log(`${feature} pressed`);
     }
