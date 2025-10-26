@@ -9,6 +9,10 @@ import {
 } from 'expo-audio';
 import Voice from '@react-native-voice/voice';
 import * as Speech from 'expo-speech';
+import {
+  generateAIResponse as getAIResponse,
+  AIServiceError,
+} from '../services/AIService';
 
 interface UseVoiceManagerOptions {
   onTranscriptionComplete?: (text: string) => void;
@@ -209,18 +213,38 @@ export function useVoiceManager(options: UseVoiceManagerOptions = {}) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [audioRecorder, textFadeAnim]);
 
-  // Generate AI response
-  const generateAIResponse = useCallback((userInput: string): string => {
-    const responses = [
-      `I understand you said "${userInput}". That's an interesting point. Let me help you with that.`,
-      `Based on what you mentioned about "${userInput}", I think the best approach would be to consider all the available options carefully.`,
-      `Thank you for sharing "${userInput}". Here's what I think about that topic.`,
-      `I heard you say "${userInput}". That's a great question. Let me provide you with some insights.`,
-      `Regarding "${userInput}", I believe we should explore this further. Here's my analysis.`,
-    ];
+  // Generate AI response from OpenAI
+  const generateAIResponse = useCallback(
+    async (userInput: string): Promise<string> => {
+      try {
+        // Call OpenAI API with the transcribed text
+        const aiContent = await getAIResponse(
+          userInput,
+          'You are a helpful AI assistant. Respond concisely to voice messages.'
+        );
+        return aiContent;
+      } catch (error) {
+        console.error('AI service error:', error);
 
-    return responses[Math.floor(Math.random() * responses.length)];
-  }, []);
+        // Fallback to mock response if AI service fails
+        const mockResponses = [
+          `I understand you said "${userInput}". That's an interesting point. Let me help you with that.`,
+          `Based on what you mentioned about "${userInput}", I think the best approach would be to consider all the available options carefully.`,
+          `Thank you for sharing "${userInput}". Here's what I think about that topic.`,
+          `I heard you say "${userInput}". That's a great question. Let me provide you with some insights.`,
+          `Regarding "${userInput}", I believe we should explore this further. Here's my analysis.`,
+        ];
+
+        const errorMessage =
+          error instanceof AIServiceError
+            ? `Sorry, I encountered an error: ${error.message}`
+            : mockResponses[Math.floor(Math.random() * mockResponses.length)];
+
+        return errorMessage;
+      }
+    },
+    []
+  );
 
   // Speak response
   const speakResponse = useCallback(
@@ -284,6 +308,20 @@ export function useVoiceManager(options: UseVoiceManagerOptions = {}) {
       return;
     }
 
+    // If AI is speaking, stop it
+    if (isSpeaking) {
+      try {
+        Speech.stop();
+        setIsSpeaking(false);
+        setTranscribedText('');
+        setAiResponse('');
+        console.log('Speech stopped by user');
+      } catch (error) {
+        console.log('Error stopping speech:', error);
+      }
+      return;
+    }
+
     if (isRecordingLocal) {
       // Stop recording and speech recognition
       try {
@@ -305,7 +343,7 @@ export function useVoiceManager(options: UseVoiceManagerOptions = {}) {
         // Generate AI response and speak it if we have transcribed text
         if (transcribedText.trim()) {
           console.log('Generating AI response for:', transcribedText);
-          const response = generateAIResponse(transcribedText);
+          const response = await generateAIResponse(transcribedText);
           setAiResponse(response);
           console.log('AI Response generated:', response);
           await speakResponse(response);
@@ -345,6 +383,7 @@ export function useVoiceManager(options: UseVoiceManagerOptions = {}) {
   }, [
     hasPermission,
     isRecordingLocal,
+    isSpeaking,
     transcribedText,
     audioRecorder,
     generateAIResponse,
