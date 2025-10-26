@@ -10,7 +10,7 @@ import { useVoiceManager } from '../../src/hooks/useVoiceManager';
 
 export default function VoiceScreen() {
   const router = useRouter();
-  const [selectedModel] = useState('Axel 2.5 Pro');
+  const [selectedModel] = useState('ChatGPT');
 
   // Use the voice manager hook
   const {

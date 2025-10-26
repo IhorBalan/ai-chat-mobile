@@ -12,11 +12,11 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
-import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import CustomTextInput from '../src/components/CustomTextInput';
 import PasswordInput from '../src/components/PasswordInput';
+import Button from '../src/components/Button';
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -98,20 +98,12 @@ export default function LoginScreen() {
             </View>
 
             {/* Login Button */}
-            <TouchableOpacity
-              style={styles.loginButtonContainer}
+            <Button
+              title="Login"
               onPress={handleLogin}
-              activeOpacity={0.8}
-            >
-              <LinearGradient
-                colors={['#00A0FE', '#0385FE']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={styles.loginButton}
-              >
-                <Text style={styles.loginButtonText}>Login</Text>
-              </LinearGradient>
-            </TouchableOpacity>
+              variant="secondary"
+              style={styles.loginButtonContainer}
+            />
 
             {/* Divider */}
             <View style={styles.dividerContainer}>
@@ -220,7 +212,7 @@ const styles = StyleSheet.create({
     color: 'white',
     textAlign: 'center',
     opacity: 0.8,
-    maxWidth: 220
+    maxWidth: 220,
   },
   formContainer: {
     gap: 24,
@@ -228,19 +220,6 @@ const styles = StyleSheet.create({
   },
   loginButtonContainer: {
     marginBottom: 30,
-  },
-  loginButton: {
-    height: 52,
-    borderRadius: 28,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.3)',
-  },
-  loginButtonText: {
-    fontSize: 18,
-    fontWeight: '500',
-    color: '#FCFFFF',
   },
   dividerContainer: {
     flexDirection: 'row',

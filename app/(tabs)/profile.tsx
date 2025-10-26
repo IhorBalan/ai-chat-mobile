@@ -90,15 +90,23 @@ export default function ProfileScreen() {
         <View style={{ gap: 10, alignItems: 'center', paddingTop: 30 }}>
           {/* Profile Picture */}
           <View style={styles.profilePictureContainer}>
-            <View style={styles.profilePicture}>
-              {/* Placeholder for profile image */}
-            </View>
-            <TouchableOpacity
-              style={styles.cameraButton}
-              onPress={handleChangePhoto}
-              activeOpacity={0.8}
+            <LinearGradient
+              colors={['#00A0FE', '#0385FE']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.profilePicture}
             >
-              <Ionicons name="camera" size={24} color="white" />
+              <Ionicons name="person" size={56} color="white" />
+            </LinearGradient>
+            <TouchableOpacity onPress={handleChangePhoto} activeOpacity={0.8}>
+              <LinearGradient
+                colors={['#00A0FE', '#0385FE']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.cameraButton}
+              >
+                <Ionicons name="camera" size={24} color="white" />
+              </LinearGradient>
             </TouchableOpacity>
           </View>
 
@@ -239,7 +247,11 @@ const styles = StyleSheet.create({
     width: 112,
     height: 112,
     borderRadius: 56,
-    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
   },
   cameraButton: {
     position: 'absolute',
@@ -248,11 +260,16 @@ const styles = StyleSheet.create({
     width: 42,
     height: 42,
     borderRadius: 21,
-    backgroundColor: '#00A3FF',
-    borderWidth: 1,
-    borderColor: '#6DFFEE',
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+    overflow: 'hidden',
+    shadowColor: '#00A0FE',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
   },
   userInfoContainer: {
     alignItems: 'center',
@@ -296,15 +313,13 @@ const styles = StyleSheet.create({
     height: 12,
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.5)',
+    borderColor: 'rgba(255, 255, 255, 0.2)',
     borderRadius: 100,
     overflow: 'hidden',
   },
   progressBar: {
     height: '100%',
     backgroundColor: '#00A3FF',
-    borderWidth: 1,
-    borderColor: '#6DFFEE',
     borderRadius: 100,
   },
   section: {

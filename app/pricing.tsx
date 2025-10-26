@@ -16,6 +16,7 @@ import Header from '../src/components/Header';
 import DecorationSvg from '../src/components/DecorationSvg';
 import PlanToggle from '../src/components/PlanToggle';
 import PricingCards from '../src/components/PricingCards';
+import Button from '../src/components/Button';
 
 type PlanType = 'monthly' | 'yearly';
 
@@ -157,20 +158,11 @@ export default function PricingPlansScreen() {
 
       {/* Continue Button */}
       <View style={styles.continueButtonContainer}>
-        <TouchableOpacity
-          style={styles.continueButton}
+        <Button
+          title="Continue"
           onPress={handleContinue}
-          activeOpacity={0.8}
-        >
-          <LinearGradient
-            colors={['#00A3FF', '#0385FE']}
-            style={styles.continueButtonGradient}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-          >
-            <Text style={styles.continueButtonText}>Continue</Text>
-          </LinearGradient>
-        </TouchableOpacity>
+          style={styles.continueButton}
+        />
       </View>
     </View>
   );
@@ -308,24 +300,7 @@ const styles = StyleSheet.create({
     paddingTop: 10,
   },
   continueButton: {
-    height: 52,
-    borderRadius: 100,
-    overflow: 'hidden',
     marginBottom: 8,
-  },
-  continueButtonGradient: {
-    height: 52,
-    borderRadius: 100,
-    borderWidth: 1,
-    borderColor: '#6DFFEE',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  continueButtonText: {
-    fontSize: 18,
-    fontWeight: '500',
-    color: 'white',
-    letterSpacing: 0.5,
   },
   homeIndicator: {
     width: 134,

@@ -19,18 +19,21 @@ import Header from '../../src/components/Header';
 import BottomInputBar from '../../src/components/BottomInputBar';
 import DecorationSvg from '../../src/components/DecorationSvg';
 import ChatMessage from '../../src/components/ChatMessage';
+import DropdownMenu from '../../src/components/DropdownMenu';
 import { useChatService } from '../../src/services/ChatService';
 
 export default function ChatBotScreen() {
   const router = useRouter();
   const [message, setMessage] = useState('');
-  const [selectedModel, setSelectedModel] = useState('Axel 2.5 Pro');
+  const [selectedModel, setSelectedModel] = useState('ChatGPT');
+  const [showMenu, setShowMenu] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
 
   // Use the chat service
   const {
     messages,
     sendMessage: chatSendMessage,
+    clearMessages,
     isLoading,
   } = useChatService();
 
@@ -66,8 +69,17 @@ export default function ChatBotScreen() {
     console.log('Model selector pressed');
   };
 
-  const handleEdit = () => {
-    console.log('Edit pressed');
+  const handleMore = () => {
+    setShowMenu(true);
+  };
+
+  const handleCloseMenu = () => {
+    setShowMenu(false);
+  };
+
+  const handleRestartChat = () => {
+    clearMessages();
+    setMessage('');
   };
 
   const handleSend = () => {
@@ -141,7 +153,7 @@ export default function ChatBotScreen() {
       {/* Header */}
       <Header
         onBack={handleBack}
-        onMore={handleEdit}
+        onMore={handleMore}
         centralSlot={
           <TouchableOpacity
             style={styles.modelSelector}
@@ -153,6 +165,21 @@ export default function ChatBotScreen() {
             <Ionicons name="chevron-down" size={11} color="white" />
           </TouchableOpacity>
         }
+      />
+
+      {/* Dropdown Menu */}
+      <DropdownMenu
+        visible={showMenu}
+        onClose={handleCloseMenu}
+        items={[
+          {
+            icon: 'refresh-outline',
+            label: 'Restart chat',
+            onPress: handleRestartChat,
+          },
+        ]}
+        topPosition={Platform.OS === 'ios' ? 108 : 76}
+        rightPosition={12}
       />
 
       {/* Chat Area */}
