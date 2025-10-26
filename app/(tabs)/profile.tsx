@@ -35,15 +35,15 @@ export default function ProfileScreen() {
   };
 
   const handleAccountSetting = () => {
-    console.log('Account Setting pressed');
+    router.push('/account');
   };
 
   const handleSecurityInfo = () => {
-    console.log('Security Information pressed');
+    router.push('/security');
   };
 
   const handlePaymentMethod = () => {
-    console.log('Payment Method pressed');
+    router.push('/payment');
   };
 
   const handleHelpCenter = () => {

@@ -5,7 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 interface ButtonProps {
   title: string;
   onPress: () => void;
-  variant?: 'primary' | 'secondary';
+  variant?: 'primary' | 'secondary' | 'outlined';
   disabled?: boolean;
   style?: ViewStyle;
 }
@@ -33,6 +33,23 @@ export default function Button({
         >
           <Text style={[styles.buttonText]}>{title}</Text>
         </LinearGradient>
+      </TouchableOpacity>
+    );
+  }
+
+  if (variant === 'outlined') {
+    return (
+      <TouchableOpacity
+        style={[styles.buttonContainer, styles.outlinedButtonContainer, style]}
+        onPress={onPress}
+        activeOpacity={0.8}
+        disabled={disabled}
+      >
+        <Text
+          style={[styles.outlinedButtonText, disabled && styles.buttonDisabled]}
+        >
+          {title}
+        </Text>
       </TouchableOpacity>
     );
   }
@@ -78,5 +95,18 @@ const styles = StyleSheet.create({
   },
   buttonDisabled: {
     opacity: 0.5,
+  },
+  outlinedButtonContainer: {
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: '#00A3FF',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  outlinedButtonText: {
+    fontSize: 18,
+    fontWeight: '500',
+    color: '#00A3FF',
+    letterSpacing: 0.5,
   },
 });
