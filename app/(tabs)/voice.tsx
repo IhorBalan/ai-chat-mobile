@@ -1,16 +1,28 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Animated } from 'react-native';
+import { View, Text, StyleSheet, Animated, Platform } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useRouter, useFocusEffect } from 'expo-router';
 import VoiceHeader from '../../src/components/VoiceHeader';
 import VoiceControls from '../../src/components/VoiceControls';
 import VoiceAnimation from '../../src/components/VoiceAnimation';
 import DecorationSvg from '../../src/components/DecorationSvg';
+import DropdownMenu from '../../src/components/DropdownMenu';
+import VoiceModal, { VoiceOption } from '../../src/components/VoiceModal';
 import { useVoiceManager } from '../../src/hooks/useVoiceManager';
 
 export default function VoiceScreen() {
   const router = useRouter();
   const [selectedModel] = useState('ChatGPT');
+  const [showMenu, setShowMenu] = useState(false);
+  const [showVoiceModal, setShowVoiceModal] = useState(false);
+  const [selectedVoice, setSelectedVoice] = useState<VoiceOption>({
+    id: 'default',
+    name: 'Neutral Voice',
+    description: 'Natural balanced tone',
+    pitch: 1.0,
+    rate: 1.0,
+    icon: 'mic-outline',
+  });
 
   // Use the voice manager hook
   const {
@@ -61,7 +73,24 @@ export default function VoiceScreen() {
   };
 
   const handleMore = () => {
-    console.log('More options pressed');
+    setShowMenu(true);
+  };
+
+  const handleCloseMenu = () => {
+    setShowMenu(false);
+  };
+
+  const handleChangeVoiceResponder = () => {
+    setShowVoiceModal(true);
+  };
+
+  const handleVoiceSelect = (voice: VoiceOption) => {
+    setSelectedVoice(voice);
+    console.log('Selected voice:', voice);
+  };
+
+  const handleAudioSettings = () => {
+    console.log('Audio settings pressed');
   };
 
   const handleScan = () => {
@@ -92,6 +121,34 @@ export default function VoiceScreen() {
         onModelSelect={handleModelSelect}
         onMore={handleMore}
         shouldAnimate={false}
+      />
+
+      {/* Dropdown Menu */}
+      <DropdownMenu
+        visible={showMenu}
+        onClose={handleCloseMenu}
+        items={[
+          {
+            icon: 'mic-outline',
+            label: 'Change AI voice',
+            onPress: handleChangeVoiceResponder,
+          },
+          {
+            icon: 'settings-outline',
+            label: 'Audio settings',
+            onPress: handleAudioSettings,
+          },
+        ]}
+        topPosition={Platform.OS === 'ios' ? 108 : 76}
+        rightPosition={12}
+      />
+
+      {/* Voice Selection Modal */}
+      <VoiceModal
+        visible={showVoiceModal}
+        onClose={() => setShowVoiceModal(false)}
+        selectedVoice={selectedVoice}
+        onSelectVoice={handleVoiceSelect}
       />
 
       {/* Text Content */}
