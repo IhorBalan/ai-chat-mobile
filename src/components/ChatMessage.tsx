@@ -1,5 +1,12 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+  Image,
+} from 'react-native';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 
 interface Message {
@@ -8,6 +15,7 @@ interface Message {
   content: string;
   timestamp: string;
   isTyping?: boolean;
+  imageUri?: string;
 }
 
 interface ChatMessageProps {
@@ -53,6 +61,12 @@ export default function ChatMessage({
     return (
       <View style={styles.messageContainer}>
         <View style={styles.messageBubble}>
+          {message.imageUri && (
+            <Image
+              source={{ uri: message.imageUri }}
+              style={styles.messageImage}
+            />
+          )}
           <Text style={styles.messageText}>{message.content}</Text>
           <Text style={styles.timestamp}>{message.timestamp}</Text>
           <View style={styles.messageActions}>
@@ -83,7 +97,15 @@ export default function ChatMessage({
   return (
     <View style={styles.userMessageContainer}>
       <View style={styles.userMessageBubble}>
-        <Text style={styles.userMessageText}>{message.content}</Text>
+        {message.imageUri && (
+          <Image
+            source={{ uri: message.imageUri }}
+            style={styles.userMessageImage}
+          />
+        )}
+        {message.content && (
+          <Text style={styles.userMessageText}>{message.content}</Text>
+        )}
         <Text style={styles.userTimestamp}>{message.timestamp}</Text>
       </View>
     </View>
@@ -127,6 +149,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  messageImage: {
+    width: '100%',
+    height: 200,
+    borderRadius: 8,
+    marginBottom: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+  },
   userMessageContainer: {
     marginBottom: 16,
     paddingHorizontal: 16,
@@ -143,6 +172,13 @@ const styles = StyleSheet.create({
     color: 'white',
     lineHeight: 24,
     marginBottom: 8,
+  },
+  userMessageImage: {
+    width: 200,
+    height: 200,
+    borderRadius: 8,
+    marginBottom: 8,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
   },
   userTimestamp: {
     fontSize: 12,

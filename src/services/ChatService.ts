@@ -10,11 +10,12 @@ export interface Message {
   type: 'user' | 'ai';
   content: string;
   timestamp: string;
+  imageUri?: string;
 }
 
 interface ChatService {
   messages: Message[];
-  sendMessage: (content: string) => void;
+  sendMessage: (content: string, imageUri?: string) => void;
   clearMessages: () => void;
   isLoading: boolean;
 }
@@ -64,8 +65,8 @@ export function useChatService(): ChatService {
   const [isLoading, setIsLoading] = useState(false);
 
   const sendMessage = useCallback(
-    async (content: string) => {
-      if (!content.trim()) return;
+    async (content: string, imageUri?: string) => {
+      if (!content.trim() && !imageUri) return;
 
       const userMessage: Message = {
         id: Date.now(),
@@ -75,6 +76,7 @@ export function useChatService(): ChatService {
           hour: '2-digit',
           minute: '2-digit',
         }),
+        imageUri,
       };
 
       // Add user message immediately
@@ -96,9 +98,11 @@ export function useChatService(): ChatService {
         }
 
         // Add the current user message
+        // For now, we'll just send the text content
+        // In a full implementation, we'd also send the image to the AI
         conversationHistory.push({
           role: 'user',
-          content: content.trim(),
+          content: imageUri ? `[Image attached] ${content.trim()}` : content.trim(),
         });
 
         // Get AI response from OpenAI

@@ -55,5 +55,9 @@
 	<string>This app needs access to your microphone to record voice messages and interact with the AI assistant.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>This app uses speech recognition to convert your voice into text for better interaction with the AI assistant.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>This app needs access to your camera to take photos and attach them to your messages.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app needs access to your photo library to select and attach photos to your messages.</string>
 </dict>
 </plist>

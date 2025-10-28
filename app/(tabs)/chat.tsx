@@ -9,12 +9,15 @@ import {
   Platform,
   KeyboardAvoidingView,
   Keyboard,
+  Alert,
+  Image,
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
+import * as ImagePicker from 'expo-image-picker';
 import Header from '../../src/components/Header';
 import BottomInputBar from '../../src/components/BottomInputBar';
 import DecorationSvg from '../../src/components/DecorationSvg';
@@ -27,6 +30,7 @@ export default function ChatBotScreen() {
   const [message, setMessage] = useState('');
   const [selectedModel, setSelectedModel] = useState('ChatGPT');
   const [showMenu, setShowMenu] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const scrollViewRef = useRef<ScrollView>(null);
 
   // Use the chat service
@@ -83,9 +87,10 @@ export default function ChatBotScreen() {
   };
 
   const handleSend = () => {
-    if (message.trim() && !isLoading) {
-      chatSendMessage(message);
+    if ((message.trim() || selectedImage) && !isLoading) {
+      chatSendMessage(message, selectedImage || undefined);
       setMessage('');
+      setSelectedImage(null);
       // Scroll to bottom after sending
       setTimeout(() => {
         scrollViewRef.current?.scrollToEnd({ animated: true });
@@ -93,16 +98,91 @@ export default function ChatBotScreen() {
     }
   };
 
-  const handleCamera = () => {
-    console.log('Camera pressed');
+  const handleCamera = async () => {
+    try {
+      const permissionResult =
+        await ImagePicker.requestCameraPermissionsAsync();
+
+      if (permissionResult.granted === false) {
+        Alert.alert(
+          'Permission Required',
+          'Camera permission is required to take photos.'
+        );
+        return;
+      }
+
+      const result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ['images'],
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 0.8,
+      });
+
+      if (!result.canceled && result.assets[0]) {
+        setSelectedImage(result.assets[0].uri);
+      }
+    } catch (error) {
+      console.error('Camera error:', error);
+      Alert.alert('Error', 'Failed to open camera');
+    }
   };
 
-  const handleImage = () => {
-    console.log('Image pressed');
+  const handleImage = async () => {
+    try {
+      const permissionResult =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+      if (permissionResult.granted === false) {
+        Alert.alert(
+          'Permission Required',
+          'Photo library permission is required to select images.'
+        );
+        return;
+      }
+
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ['images'],
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 0.8,
+      });
+
+      if (!result.canceled && result.assets[0]) {
+        setSelectedImage(result.assets[0].uri);
+      }
+    } catch (error) {
+      console.error('Image picker error:', error);
+      Alert.alert('Error', 'Failed to open photo library');
+    }
   };
 
-  const handleAttachment = () => {
-    console.log('Attachment pressed');
+  const handleAttachment = async () => {
+    try {
+      const permissionResult =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+      if (permissionResult.granted === false) {
+        Alert.alert(
+          'Permission Required',
+          'Photo library permission is required to select images.'
+        );
+        return;
+      }
+
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ['images'],
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 0.8,
+      });
+
+      if (!result.canceled && result.assets[0]) {
+        setSelectedImage(result.assets[0].uri);
+      }
+    } catch (error) {
+      console.error('Attachment error:', error);
+      Alert.alert('Error', 'Failed to open photo library');
+    }
   };
 
   const handleAlarmCancel = () => {
@@ -199,6 +279,7 @@ export default function ChatBotScreen() {
               type: msg.type,
               content: msg.content,
               timestamp: msg.timestamp,
+              imageUri: msg.imageUri,
             }}
             onCopy={handleCopy}
             onRegenerate={handleRegenerate}
@@ -217,6 +298,19 @@ export default function ChatBotScreen() {
         {/* Bottom spacing */}
         <View style={styles.bottomSpacer} />
       </ScrollView>
+
+      {/* Selected Image Preview */}
+      {selectedImage && (
+        <View style={styles.imagePreview}>
+          <Image source={{ uri: selectedImage }} style={styles.previewImage} />
+          <TouchableOpacity
+            style={styles.removeImageButton}
+            onPress={() => setSelectedImage(null)}
+          >
+            <Ionicons name="close-circle" size={28} color="white" />
+          </TouchableOpacity>
+        </View>
+      )}
 
       {/* Bottom Input Bar */}
       <BottomInputBar
@@ -317,5 +411,23 @@ const styles = StyleSheet.create({
   loadingText: {
     color: 'rgba(255, 255, 255, 0.5)',
     fontSize: 14,
+  },
+  imagePreview: {
+    paddingHorizontal: 16,
+    paddingTop: 8,
+    paddingBottom: 4,
+  },
+  previewImage: {
+    width: '100%',
+    height: 150,
+    borderRadius: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  removeImageButton: {
+    position: 'absolute',
+    top: 12,
+    right: 20,
   },
 });
