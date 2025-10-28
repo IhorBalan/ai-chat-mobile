@@ -12,14 +12,17 @@ import { StatusBar } from 'expo-status-bar';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import Header from '../src/components/Header';
-import DecorationSvg from '../src/components/DecorationSvg';
-import Button from '../src/components/Button';
-import Input from '../src/components/Input';
-import LanguageSelector from '../src/components/LanguageSelector';
-import LanguageModal from '../src/components/LanguageModal';
-import type { Language } from '../src/components/LanguageModal';
-import { generateAIResponse, AIServiceError } from '../src/services/AIService';
+import Header from '../src/modules/core/components/Header';
+import DecorationSvg from '../src/modules/core/components/DecorationSvg';
+import Button from '../src/modules/core/components/Button';
+import Input from '../src/modules/core/components/Input';
+import LanguageSelector from '../src/modules/core/components/LanguageSelector';
+import LanguageModal from '../src/modules/core/components/LanguageModal';
+import type { Language } from '../src/modules/core/components/LanguageModal';
+import {
+  generateAIResponse,
+  AIServiceError,
+} from '../src/modules/core/services/AIService';
 
 // Animated Dots Component
 function LoadingDots() {

@@ -12,7 +12,7 @@ import * as Speech from 'expo-speech';
 import {
   generateAIResponse as getAIResponse,
   AIServiceError,
-} from '../services/AIService';
+} from '../../core/services/AIService';
 
 interface UseVoiceManagerOptions {
   onTranscriptionComplete?: (text: string) => void;

@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as Speech from 'expo-speech';
-import BottomModal from './BottomModal';
+import BottomModal from '../../core/components/BottomModal';
 
 export interface VoiceOption {
   id: string;

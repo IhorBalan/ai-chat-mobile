@@ -18,12 +18,12 @@ import { useRouter } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as ImagePicker from 'expo-image-picker';
-import Header from '../../src/components/Header';
-import BottomInputBar from '../../src/components/BottomInputBar';
-import DecorationSvg from '../../src/components/DecorationSvg';
-import ChatMessage from '../../src/components/ChatMessage';
-import DropdownMenu from '../../src/components/DropdownMenu';
-import { useChatService } from '../../src/services/ChatService';
+import Header from '../../src/modules/core/components/Header';
+import BottomInputBar from '../../src/modules/chat/components/BottomInputBar';
+import DecorationSvg from '../../src/modules/core/components/DecorationSvg';
+import ChatMessage from '../../src/modules/chat/components/ChatMessage';
+import DropdownMenu from '../../src/modules/core/components/DropdownMenu';
+import { useChatService } from '../../src/modules/chat/services/ChatService';
 
 export default function ChatBotScreen() {
   const router = useRouter();

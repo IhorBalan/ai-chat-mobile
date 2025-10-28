@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import Header from './Header';
+import Header from '../../core/components/Header';
 
 interface VoiceHeaderProps {
   selectedModel: string;

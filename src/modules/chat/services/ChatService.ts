@@ -3,7 +3,7 @@ import {
   getAICompletion,
   type OpenAIMessage,
   AIServiceError,
-} from './AIService';
+} from '../../core/services/AIService';
 
 export interface Message {
   id: number;
@@ -102,7 +102,9 @@ export function useChatService(): ChatService {
         // In a full implementation, we'd also send the image to the AI
         conversationHistory.push({
           role: 'user',
-          content: imageUri ? `[Image attached] ${content.trim()}` : content.trim(),
+          content: imageUri
+            ? `[Image attached] ${content.trim()}`
+            : content.trim(),
         });
 
         // Get AI response from OpenAI

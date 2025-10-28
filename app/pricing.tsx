@@ -12,11 +12,11 @@ import { LinearGradient } from 'expo-linear-gradient';
 import RadialGradient from 'react-native-radial-gradient';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import Header from '../src/components/Header';
-import DecorationSvg from '../src/components/DecorationSvg';
-import PlanToggle from '../src/components/PlanToggle';
-import PricingCards from '../src/components/PricingCards';
-import Button from '../src/components/Button';
+import Header from '../src/modules/core/components/Header';
+import DecorationSvg from '../src/modules/core/components/DecorationSvg';
+import PlanToggle from '../src/modules/subscription/components/PlanToggle';
+import PricingCards from '../src/modules/subscription/components/PricingCards';
+import Button from '../src/modules/core/components/Button';
 
 type PlanType = 'monthly' | 'yearly';
 

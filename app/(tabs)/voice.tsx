@@ -2,13 +2,15 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, Animated, Platform } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useRouter, useFocusEffect } from 'expo-router';
-import VoiceHeader from '../../src/components/VoiceHeader';
-import VoiceControls from '../../src/components/VoiceControls';
-import VoiceAnimation from '../../src/components/VoiceAnimation';
-import DecorationSvg from '../../src/components/DecorationSvg';
-import DropdownMenu from '../../src/components/DropdownMenu';
-import VoiceModal, { VoiceOption } from '../../src/components/VoiceModal';
-import { useVoiceManager } from '../../src/hooks/useVoiceManager';
+import VoiceHeader from '../../src/modules/voice/components/VoiceHeader';
+import VoiceControls from '../../src/modules/voice/components/VoiceControls';
+import VoiceAnimation from '../../src/modules/voice/components/VoiceAnimation';
+import DecorationSvg from '../../src/modules/core/components/DecorationSvg';
+import DropdownMenu from '../../src/modules/core/components/DropdownMenu';
+import VoiceModal, {
+  VoiceOption,
+} from '../../src/modules/voice/components/VoiceModal';
+import { useVoiceManager } from '../../src/modules/voice/hooks/useVoiceManager';
 
 export default function VoiceScreen() {
   const router = useRouter();

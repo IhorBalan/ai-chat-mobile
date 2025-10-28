@@ -1,5 +1,5 @@
 import Constants from 'expo-constants';
-import { initializeAPIKey } from '../services/AIService';
+import { initializeAPIKey } from '../modules/core/services/AIService';
 
 /**
  * Initialize API configuration

@@ -11,11 +11,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import AIAssistantCard from '../../src/components/AIAssistantCard';
-import FeatureCards from '../../src/components/FeatureCards';
-import ContinueConversations from '../../src/components/ContinueConversations';
-import UpgradeBadge from '../../src/components/UpgradeBadge';
-import DecorationSvg from '../../src/components/DecorationSvg';
+import AIAssistantCard from '../../src/modules/core/components/AIAssistantCard';
+import FeatureCards from '../../src/modules/core/components/FeatureCards';
+import ContinueConversations from '../../src/modules/chat/components/ContinueConversations';
+import UpgradeBadge from '../../src/modules/subscription/components/UpgradeBadge';
+import DecorationSvg from '../../src/modules/core/components/DecorationSvg';
 
 export default function HomeScreen() {
   const router = useRouter();

@@ -36,7 +36,7 @@ export default function VoiceAnimation({
   return (
     <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
       <LottieView
-        source={require('../assets/animations/voice-animation.json')}
+        source={require('../../../assets/animations/voice-animation.json')}
         autoPlay
         loop
         style={[styles.animation, { width, height }]}

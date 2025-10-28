@@ -13,9 +13,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import Input from '../src/components/Input';
-import Button from '../src/components/Button';
-import DecorationSvg from '../src/components/DecorationSvg';
+import Input from '../src/modules/core/components/Input';
+import Button from '../src/modules/core/components/Button';
+import DecorationSvg from '../src/modules/core/components/DecorationSvg';
 
 export default function LoginScreen() {
   const router = useRouter();

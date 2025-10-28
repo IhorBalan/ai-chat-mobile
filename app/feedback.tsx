@@ -10,10 +10,10 @@ import {
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useRouter } from 'expo-router';
-import Header from '../src/components/Header';
-import DecorationSvg from '../src/components/DecorationSvg';
-import Input from '../src/components/Input';
-import Button from '../src/components/Button';
+import Header from '../src/modules/core/components/Header';
+import DecorationSvg from '../src/modules/core/components/DecorationSvg';
+import Input from '../src/modules/core/components/Input';
+import Button from '../src/modules/core/components/Button';
 
 export default function FeedbackScreen() {
   const router = useRouter();

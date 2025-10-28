@@ -11,10 +11,10 @@ import { StatusBar } from 'expo-status-bar';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import Header from '../../src/components/Header';
-import DecorationSvg from '../../src/components/DecorationSvg';
-import Paper from '../../src/components/Paper';
-import MenuItem from '../../src/components/MenuItem';
+import Header from '../../src/modules/core/components/Header';
+import DecorationSvg from '../../src/modules/core/components/DecorationSvg';
+import Paper from '../../src/modules/core/components/Paper';
+import MenuItem from '../../src/modules/core/components/MenuItem';
 
 export default function ProfileScreen() {
   const router = useRouter();

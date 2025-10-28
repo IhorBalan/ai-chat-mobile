@@ -8,7 +8,7 @@ import {
   Animated,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import Paper from './Paper';
+import Paper from '../../core/components/Paper';
 
 type PlanType = 'monthly' | 'yearly';
 

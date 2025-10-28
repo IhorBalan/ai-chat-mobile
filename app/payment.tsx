@@ -9,10 +9,10 @@ import {
 import { StatusBar } from 'expo-status-bar';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import Header from '../src/components/Header';
-import DecorationSvg from '../src/components/DecorationSvg';
-import Paper from '../src/components/Paper';
-import Button from '../src/components/Button';
+import Header from '../src/modules/core/components/Header';
+import DecorationSvg from '../src/modules/core/components/DecorationSvg';
+import Paper from '../src/modules/core/components/Paper';
+import Button from '../src/modules/core/components/Button';
 
 interface PaymentMethod {
   id: number;
