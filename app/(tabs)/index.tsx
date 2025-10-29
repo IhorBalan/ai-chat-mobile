@@ -61,13 +61,15 @@ export default function HomeScreen() {
   const conversations = [
     {
       id: 1,
-      title: 'Brainstormin...',
-      preview: '"Okay, how about a mobile app..."',
+      title: 'Website Design Ideas',
+      preview:
+        'Can you suggest some modern design trends for a tech startup website?',
     },
     {
       id: 2,
-      title: 'Brainstormin...',
-      preview: '"Okay, how about a mobile app..."',
+      title: 'Python Script Help',
+      preview:
+        'I need help optimizing my data processing script for better performance',
     },
   ];
 
