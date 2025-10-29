@@ -16,6 +16,7 @@ import { useRouter } from 'expo-router';
 import Input from '../src/modules/core/components/Input';
 import Button from '../src/modules/core/components/Button';
 import DecorationSvg from '../src/modules/core/components/DecorationSvg';
+import IconSvg from '../src/assets/icon.svg';
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -70,6 +71,9 @@ export default function LoginScreen() {
           >
             {/* Header */}
             <View style={styles.headerContainer}>
+              <View style={styles.iconContainer}>
+                <IconSvg width={60} height={60} />
+              </View>
               <Text style={styles.headerTitle}>
                 Sign in to your{'\n'}Account
               </Text>
@@ -191,6 +195,9 @@ const styles = StyleSheet.create({
   headerContainer: {
     alignItems: 'center',
     paddingVertical: 60,
+  },
+  iconContainer: {
+    marginBottom: 24,
   },
   headerTitle: {
     fontSize: 24,

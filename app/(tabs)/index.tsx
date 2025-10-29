@@ -16,6 +16,7 @@ import FeatureCards from '../../src/modules/core/components/FeatureCards';
 import ContinueConversations from '../../src/modules/chat/components/ContinueConversations';
 import UpgradeBadge from '../../src/modules/subscription/components/UpgradeBadge';
 import DecorationSvg from '../../src/modules/core/components/DecorationSvg';
+import IconSvg from '../../src/assets/icon.svg';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -90,7 +91,14 @@ export default function HomeScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={{ gap: 20 }}>
-          <UpgradeBadge onPress={handleUpgrade} />
+          {/* Header with Icon and Upgrade Button */}
+          <View style={styles.headerRow}>
+            <View style={styles.iconContainer}>
+              <IconSvg width={40} height={40} />
+              <Text style={styles.chatAIText}>Chat AI</Text>
+            </View>
+            <UpgradeBadge onPress={handleUpgrade} />
+          </View>
           <AIAssistantCard onChatPress={handleChat} />
           <FeatureCards features={features} />
         </View>
@@ -108,6 +116,22 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#080F1A',
+  },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 4,
+  },
+  iconContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  chatAIText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#FCFFFF',
   },
   decorationContainer: {
     position: 'absolute',

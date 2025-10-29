@@ -17,6 +17,7 @@ import DecorationSvg from '../src/modules/core/components/DecorationSvg';
 import PlanToggle from '../src/modules/subscription/components/PlanToggle';
 import PricingCards from '../src/modules/subscription/components/PricingCards';
 import Button from '../src/modules/core/components/Button';
+import IconSvg from '../src/assets/icon.svg';
 
 type PlanType = 'monthly' | 'yearly';
 
@@ -69,13 +70,13 @@ export default function PricingPlansScreen() {
       >
         {/* Premium Title */}
         <View style={styles.premiumTitleContainer}>
-          <Text style={styles.premiumTitle}>Axel Premium </Text>
+          <Text style={styles.premiumTitle}>Chat AI Premium </Text>
           <Ionicons name="star" size={18} color="#00A3FF" />
         </View>
 
         {/* Description */}
         <Text style={styles.description}>
-          Unlock more features and enjoy a better experience with Axel AI
+          Unlock more features and enjoy a better experience with Chat AI
           Premium
         </Text>
 
@@ -122,16 +123,12 @@ export default function PricingPlansScreen() {
               end={{ x: 0, y: 1 }}
             >
               <LinearGradient
-                colors={['#00A3FE', '#0385FE']}
+                colors={['#FFFFFF', '#F0F0F0']}
                 style={styles.voiceButton}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 0, y: 1 }}
               >
-                {/* <MaterialCommunityIcons
-                  name={'waveform'}
-                  size={42}
-                  color="white"
-                /> */}
+                <IconSvg width={48} height={48} />
               </LinearGradient>
             </LinearGradient>
           </TouchableOpacity>

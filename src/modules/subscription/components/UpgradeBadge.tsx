@@ -27,7 +27,6 @@ export default function UpgradeBadge({ onPress }: UpgradeBadgeProps) {
 
 const styles = StyleSheet.create({
   container: {
-    alignSelf: 'flex-end',
   },
   gradientBorder: {
     padding: 1,
