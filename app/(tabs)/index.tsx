@@ -26,7 +26,7 @@ export default function HomeScreen() {
   };
 
   const handleChat = () => {
-    console.log('Chat pressed');
+    router.push('/(tabs)/chat');
   };
 
   const handleFeature = (feature: string) => {

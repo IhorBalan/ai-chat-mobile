@@ -112,8 +112,8 @@ export default function ProfileScreen() {
 
           {/* User Info */}
           <View style={styles.userInfoContainer}>
-            <Text style={styles.userName}>Rhadini Abigail</Text>
-            <Text style={styles.userEmail}>abigailrha@chatai.io</Text>
+            <Text style={styles.userName}>John Doe</Text>
+            <Text style={styles.userEmail}>john.doe@example.com</Text>
           </View>
         </View>
 
